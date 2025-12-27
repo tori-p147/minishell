@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 20:18:34 by vmatsuda          #+#    #+#             */
-/*   Updated: 2025/12/24 22:36:43 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2025/12/27 17:57:28 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,32 +25,43 @@ typedef enum parser_state
 	NORMAL = 0,
 	IN_SINGLE_QUOTE = 1,
 	IN_DOUBLE_QUOTE = 2
-}		t_parser_state;
+}					t_parser_state;
 
 typedef enum exit_status
 {
 	EXIT_SYNTAX_ERROR = 2
-}		t_exit_status;
+}					t_exit_status;
+
+typedef struct tokenizer_ctx
+{
+	t_parser_state	state;
+	char			**tokens;
+	char			*token;
+	char			*line;
+	char			c;
+	size_t			line_len;
+}					t_tokenizer_ctx;
 
 /*
 signal_handler.c
 */
-void	setup_signals_shell(void);
-void	sigint_handler(int sig);
+void				setup_signals_shell(void);
+void				sigint_handler(int sig);
 
 /*
 parser.c
 */
-void	print_error(t_exit_status status);
-char	**copy_tokens(char **tokens, size_t i);
-char	**add_token(char **tokens, char *current);
-char	**parse(char *in_line);
+void				print_error(t_exit_status status);
+char				**copy_tokens(char **tokens, size_t i);
+char				**add_token(t_tokenizer_ctx *ctx);
+char				**parse(t_tokenizer_ctx *ctx);
 
 /*
 free_utils.c
 */
-void free_and_exit(char *in_line, char *current, int status);
+void				free_ctx(t_tokenizer_ctx *ctx);
+void				free_and_exit(t_tokenizer_ctx *ctx, int status);
 
-void	read_input(void);
+void				read_input(t_tokenizer_ctx *ctx);
 
 #endif

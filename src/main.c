@@ -6,36 +6,50 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 20:18:19 by vmatsuda          #+#    #+#             */
-/*   Updated: 2025/12/21 20:30:09 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2025/12/27 18:29:14 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "shell.h"
 #include "libft.h"
+#include "shell.h"
 
-void read_input(void)
+void	init_ctx(t_tokenizer_ctx *ctx)
 {
-	char *in_line;
-	char **args;
-	// int status;
-	
-	while ((in_line = readline("Zzz> ")) != NULL)
+	ctx->tokens = NULL;
+	ctx->token = NULL;
+	ctx->state = NORMAL;
+	ctx->line_len = 0;
+	ctx->line = NULL;
+	ctx->c = 0;
+}
+
+void	read_input(t_tokenizer_ctx *ctx)
+{
+	const char	*prompt = "Zzz> ";
+
+	ctx->line = readline(prompt);
+	while ((ctx->line != NULL))
 	{
-		if (ft_strlen(in_line) > 0)
+		if (ft_strlen(ctx->line) > 0)
 		{
-			add_history(in_line);
-			args = parse(in_line);
-			// status = execute(args);
-			free(args);
+			add_history(ctx->line);
+			ctx->tokens = parse(ctx);
+			// status = execute(ctx->tokens);
+			free(ctx->tokens);
+			ctx->tokens = NULL;
 		}
-		free(in_line);
+		free(ctx->line);
+		ctx->line = readline(prompt);
 	}
 }
 
-int main(void)
+int	main(void)
 {
+	t_tokenizer_ctx	ctx;
+
 	setup_signals_shell();
-	read_input();
+	init_ctx(&ctx);
+	read_input(&ctx);
 	rl_clear_history();
 	return (EXIT_SUCCESS);
 }

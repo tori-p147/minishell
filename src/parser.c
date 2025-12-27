@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/20 19:48:37 by vmatsuda          #+#    #+#             */
-/*   Updated: 2025/12/21 23:19:45 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2025/12/27 18:39:34 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ char	**copy_tokens(char **tokens, size_t i)
 	char	**new;
 	size_t	j;
 
-	new = malloc(sizeof(char) * (i + 1));
+	new = malloc(sizeof(char *) * (i + 1));
 	if (!new)
 	{
 		free(tokens);
@@ -34,143 +34,134 @@ char	**copy_tokens(char **tokens, size_t i)
 	while (++j < i)
 		new[j] = tokens[j];
 	free(tokens);
+	new[i] = NULL;
 	return (new);
 }
 
-char	**add_token(char **tokens, char *current)
+char	**add_token(t_tokenizer_ctx *ctx)
 {
 	char	**new;
 	size_t	i;
 
 	i = 0;
-	if (!tokens)
+	if (!ctx->token)
+		return (ctx->tokens);
+	if (!ctx->tokens)
 	{
-		tokens = malloc(sizeof(char) * 2);
-		if (!tokens)
+		ctx->tokens = malloc(sizeof(char *) * (2));
+		if (!ctx->tokens)
 			return (NULL);
-		tokens[i] = current;
-		tokens[i + 1] = NULL;
-		return (tokens);
 	}
 	else
 	{
-		while (tokens[i])
+		while (ctx->tokens[i])
 			i++;
-		new = copy_tokens(tokens, i);
+		new = copy_tokens(ctx->tokens, i);
 		if (!new)
 			return (NULL);
-		new[i] = current;
-		new[i + 1] = NULL;
+		ctx->tokens = new;
 	}
-	return (new);
+	ctx->tokens[i] = ctx->token;
+	ctx->tokens[i + 1] = NULL;
+	return (ctx->tokens);
 }
 
-char	*strjoin_char(char *str, char c)
+char	*strjoin_char(t_tokenizer_ctx *ctx, char c)
 {
 	char	*new;
-	size_t	str_len;
+	size_t	token_len;
 
 	new = NULL;
-	if (!str)
+	if (!ctx->token)
 	{
-		str_len = 1;
-		str = malloc(sizeof(char) * (str_len + 1));
-		*str = c;
-		str[str_len] = 0;
-		return (str);
+		ctx->token = malloc(sizeof(char) * 2);
+		if (!ctx->token)
+			free_and_exit(ctx, EXIT_FAILURE);
+		ctx->token[0] = c;
+		ctx->token[1] = 0;
+		return (ctx->token);
 	}
-	str_len = ft_strlen(str);
-	new = malloc(sizeof(char) * (str_len + 2));
-	new = ft_memcpy(new, str, str_len);
-	new[str_len] = c;
-	new[str_len + 1] = 0;
-	return (new);
+	token_len = ft_strlen(ctx->token);
+	new = malloc(sizeof(char) * (token_len + 2));
+	if (!new)
+		free_and_exit(ctx, EXIT_FAILURE);
+	ft_memcpy(new, ctx->token, token_len);
+	free(ctx->token);
+	ctx->token = new;
+	ctx->token[token_len] = c;
+	ctx->token[token_len + 1] = 0;
+	return (ctx->token);
 }
 
-char	**parse(char *in_line)
+void print_tokens(char **tkns)
 {
-	size_t			i;
-	size_t			line_len;
-	char			c;
-	char			**tokens;
-	char			*current;
-	t_parser_state	state;
-	size_t			j;
+	size_t j = 0;
+	while (tkns[j])
+	{
+		printf("tokens[%zu] = %s\n", j, tkns[j]);
+		j++;
+	}
+}
+
+char	**parse(t_tokenizer_ctx *ctx)
+{
+	size_t	i;
+	char	c;
+	size_t	j;
 
 	i = -1;
 	c = 0;
-	tokens = NULL;
-	current = NULL;
 	j = 0;
-	state = 0;
-	line_len = ft_strlen(in_line);
-	// 1) space / '\t' / '' / "" not found -> 1 token
-	// 2)'' or "" not found -> tokens by space or '\t'
-	// 3) one ' / " -> syntax error: unexpected end of file and return prompt
-	// (return shell-state: exit_status 2, must show $? - command result)
-	// 4) space only -> new prompt / not save in history
-	// 5) '...' / "..." -> parse line within quote (without save quote)
-	while (++i < line_len)
+	ctx->line_len = ft_strlen(ctx->line);
+	while (++i < ctx->line_len)
 	{
-		c = in_line[i];
-		if (state == NORMAL)
+		c = ctx->line[i];
+		if (ctx->state == NORMAL)
 		{
-			printf("state %d current %s c %c\n", state, current, c);
 			if (c == '\'')
-				state = IN_SINGLE_QUOTE;
+				ctx->state = IN_SINGLE_QUOTE;
 			else if (c == '\"')
-				state = IN_DOUBLE_QUOTE;
-			else if ((c == ' ' || c == '\t') && current)
+				ctx->state = IN_DOUBLE_QUOTE;
+			else if ((c == ' ' || c == '\t'))
 			{
-				tokens = add_token(tokens, current);
-				if (!tokens)
-					free_and_exit(in_line, current, EXIT_FAILURE);
-				current = NULL;
+				ctx->tokens = add_token(ctx);
+				if (!ctx->tokens)
+					free_and_exit(ctx, EXIT_FAILURE);
+				ctx->token = NULL;
 			}
 			else
 			{
-				current = strjoin_char(current, c);
-				printf("current %s\n", current);
+				ctx->token = strjoin_char(ctx, c);
+				printf("current %s\n", ctx->token);
 			}
 		}
-		else if (state == IN_SINGLE_QUOTE)
+		else if (ctx->state == IN_SINGLE_QUOTE)
 		{
-			printf("state %d current %s c %c\n", state, current, c);
 			if (c == '\'')
-				state = NORMAL;
-			else if (c == '\"')
-				state = IN_DOUBLE_QUOTE;
+				ctx->state = NORMAL;
 			else
-				current = strjoin_char(current, c);
+				ctx->token = strjoin_char(ctx, c);
 		}
-		else if (state == IN_DOUBLE_QUOTE)
+		else if (ctx->state == IN_DOUBLE_QUOTE)
 		{
-			printf("state %d current %s c %c\n", state, current, c);
 			if (c == '\"')
-				state = NORMAL;
-			else if (c == '\'')
-				state = IN_SINGLE_QUOTE;
+				ctx->state = NORMAL;
 			else
-				current = strjoin_char(current, c);
+				ctx->token = strjoin_char(ctx, c);
 		}
 	}
-	if (state != NORMAL)
+	if (ctx->state != NORMAL)
 	{
-		printf("state %d current %s c %c\n", state, current, c);
 		print_error(EXIT_SYNTAX_ERROR);
 		return (NULL);
 	}
-	if (current)
+	if (ctx->token)
 	{
-		tokens = add_token(tokens, current);
-		if (!tokens)
-			free_and_exit(in_line, current, EXIT_FAILURE);
+		ctx->tokens = add_token(ctx);
+		if (!ctx->tokens)
+			free_and_exit(ctx, EXIT_FAILURE);
+		ctx->token = NULL;
 	}
-	size_t k = 0;
-	while (tokens[k])
-	{
-		printf("token[%zu] = %s\n", k, tokens[k]);
-		k++;
-	}
-	return (tokens);
+	print_tokens(ctx->tokens);
+	return (ctx->tokens);
 }
