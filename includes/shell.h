@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 20:18:34 by vmatsuda          #+#    #+#             */
-/*   Updated: 2025/12/27 17:57:28 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2025/12/29 13:40:02 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,14 +51,17 @@ void				sigint_handler(int sig);
 /*
 parser.c
 */
-void				print_error(t_exit_status status);
-char				**copy_tokens(char **tokens, size_t i);
-char				**add_token(t_tokenizer_ctx *ctx);
+void	print_tokens(char **tkns);
+char	*strjoin_char(t_tokenizer_ctx *ctx);
+void				error_exit(t_tokenizer_ctx *ctx, t_exit_status status);
+void				copy_tokens(t_tokenizer_ctx *ctx, size_t i);
+void				add_token(t_tokenizer_ctx *ctx);
 char				**parse(t_tokenizer_ctx *ctx);
 
 /*
 free_utils.c
 */
+void	free_tokens(char **tokens);
 void				free_ctx(t_tokenizer_ctx *ctx);
 void				free_and_exit(t_tokenizer_ctx *ctx, int status);
 

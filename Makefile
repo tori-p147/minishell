@@ -19,8 +19,10 @@ INCLUDES  = -I$(INC_DIR) -I$(INC_LIBS_DIR)
 SRC_FILES = main.c \
 			signal_handler.c \
 			parser.c \
+			parser_utils.c \
 			executor.c \
-			free_utils.c
+			free_utils.c \
+			error.c
 		
 SOURCES = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 
