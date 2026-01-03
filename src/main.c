@@ -6,15 +6,16 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 20:18:19 by vmatsuda          #+#    #+#             */
-/*   Updated: 2025/12/29 12:47:47 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/03 18:35:17 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "shell.h"
 
-void	init_ctx(t_tokenizer_ctx *ctx)
+void	init_ctx(t_tokenizer_ctx *ctx, t_shell_ctx *sh_ctx)
 {
+	ctx->shell = sh_ctx;
 	ctx->tokens = NULL;
 	ctx->token = NULL;
 	ctx->state = NORMAL;
@@ -26,6 +27,7 @@ void	init_ctx(t_tokenizer_ctx *ctx)
 void	read_input(t_tokenizer_ctx *ctx)
 {
 	const char	*prompt = "Zzz> ";
+	t_cmd		*cmd;
 
 	ctx->line = readline(prompt);
 	while ((ctx->line != NULL))
@@ -33,10 +35,11 @@ void	read_input(t_tokenizer_ctx *ctx)
 		if (ft_strlen(ctx->line) > 0)
 		{
 			add_history(ctx->line);
-			ctx->tokens = parse(ctx);
-			// status = execute(ctx->tokens);
-			printf("debug\n");
-			free_tokens(ctx->tokens);
+			ctx->tokens = tokenize(ctx);
+			cmd = parse_cmd_list(ctx, cmd);
+			execute(cmd, ctx);
+			free_cmd(cmd);
+			free_array(ctx->tokens);
 			free(ctx->token);
 			ctx->tokens = NULL;
 			ctx->token = NULL;
@@ -46,13 +49,53 @@ void	read_input(t_tokenizer_ctx *ctx)
 	}
 }
 
-int	main(void)
+void	print_envs(t_shell_ctx *sh_ctx)
 {
+	t_env	*curr;
+
+	curr = sh_ctx->env;
+	printf("curr %p\n", curr);
+	while (curr->next)
+	{
+		printf("next %p\n", curr->next);
+		printf("added key: %s \n", curr->key);
+		curr = curr->next;
+	}
+}
+
+void	set_env(t_shell_ctx *sh_ctx, char **env)
+{
+	size_t	i;
+	char	**env_entry;
+
+	i = 0;
+	env_entry = NULL;
+	while (env[i])
+		i++;
+	i = 0;
+	sh_ctx->env = NULL;
+	while (env[i])
+	{
+		// printf("env: %s\n", env[i]);
+		env_entry = ft_split(env[i], '=');
+		// printf("entry k: %s val: %s\n", env_entry[0], env_entry[1]);
+		sh_ctx->env = add_value(sh_ctx, env_entry);
+		i++;
+	}
+}
+
+int	main(int argc, char **argv, char **env)
+{
+	t_shell_ctx		sh_ctx;
 	t_tokenizer_ctx	ctx;
 
+	(void)argc;
+	(void)argv;
 	setup_signals_shell();
-	init_ctx(&ctx);
+	set_env(&sh_ctx, env);
+	init_ctx(&ctx, &sh_ctx);
 	read_input(&ctx);
 	rl_clear_history();
+	free_sh_ctx(&sh_ctx, EXIT_SUCCESS);
 	return (EXIT_SUCCESS);
 }

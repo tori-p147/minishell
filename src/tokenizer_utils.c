@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_utils.c                                     :+:      :+:    :+:   */
+/*   tokenizer_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:38:11 by vmatsuda          #+#    #+#             */
-/*   Updated: 2025/12/29 13:38:31 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/03 19:35:44 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	copy_tokens(t_tokenizer_ctx *ctx, size_t i)
 
 	new = malloc(sizeof(char *) * (i + 2));
 	if (!new)
-		free_and_exit(ctx, EXIT_FAILURE);
+		free_ctx(ctx, EXIT_FAILURE);
 	j = -1;
 	while (++j < i)
 		new[j] = ctx->tokens[j];
@@ -40,7 +40,7 @@ void	add_token(t_tokenizer_ctx *ctx)
 	{
 		ctx->tokens = malloc(sizeof(char *) * (2));
 		if (!ctx->tokens)
-			free_and_exit(ctx, EXIT_FAILURE);
+			free_ctx(ctx, EXIT_FAILURE);
 		ctx->tokens[0] = ctx->token;
 		ctx->tokens[1] = NULL;
 	}
@@ -52,7 +52,6 @@ void	add_token(t_tokenizer_ctx *ctx)
 		ctx->tokens[i] = ctx->token;
 		ctx->tokens[i + 1] = NULL;
 	}
-	print_tokens(ctx->tokens);
 }
 
 char	*strjoin_char(t_tokenizer_ctx *ctx)
@@ -65,7 +64,7 @@ char	*strjoin_char(t_tokenizer_ctx *ctx)
 	{
 		ctx->token = malloc(sizeof(char) * 2);
 		if (!ctx->token)
-			free_and_exit(ctx, EXIT_FAILURE);
+			free_ctx(ctx, EXIT_FAILURE);
 		ctx->token[0] = ctx->c;
 		ctx->token[1] = 0;
 		return (ctx->token);
@@ -73,7 +72,7 @@ char	*strjoin_char(t_tokenizer_ctx *ctx)
 	token_len = ft_strlen(ctx->token);
 	new = malloc(sizeof(char) * (token_len + 2));
 	if (!new)
-		free_and_exit(ctx, EXIT_FAILURE);
+		free_ctx(ctx, EXIT_FAILURE);
 	ft_memcpy(new, ctx->token, token_len);
 	free(ctx->token);
 	ctx->token = new;

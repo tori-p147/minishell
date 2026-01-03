@@ -5,70 +5,57 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/20 19:48:37 by vmatsuda          #+#    #+#             */
-/*   Updated: 2025/12/29 13:38:38 by vmatsuda         ###   ########.fr       */
+/*   Created: 2026/01/02 22:59:21 by vmatsuda          #+#    #+#             */
+/*   Updated: 2026/01/03 17:33:31 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "shell.h"
 
-static void	normal_process(t_tokenizer_ctx *ctx)
+t_builtin	get_builtin_type(char *token)
 {
-	if (ctx->c == '\'')
-		ctx->state = IN_SINGLE_QUOTE;
-	else if (ctx->c == '\"')
-		ctx->state = IN_DOUBLE_QUOTE;
-	else if ((ctx->c == ' ' || ctx->c == '\t'))
+	if (!ft_strncmp(token, "export", ft_strlen(token)))
+		return (BI_EXPORT);
+	return (BI_NONE);
+}
+
+t_cmd	*alloc_cmd(t_tokenizer_ctx *ctx, t_cmd *cmd)
+{
+	size_t	argv_count;
+
+	cmd = malloc(sizeof(t_cmd));
+	if (!cmd)
+		free_ctx(ctx, EXIT_FAILURE);
+	argv_count = 0;
+	while (ctx->tokens[argv_count])
+		argv_count++;
+	cmd->argv = malloc(sizeof(char *) * (argv_count + 1));
+	if (!cmd->argv)
 	{
-		add_token(ctx);
-		ctx->token = NULL;
+		free_cmd(cmd);
+		free_ctx(ctx, EXIT_FAILURE);
 	}
-	else
-	{
-		ctx->token = strjoin_char(ctx);
-		printf("current %s\n", ctx->token);
-	}
+	return (cmd);
 }
 
-static void	single_quote_process(t_tokenizer_ctx *ctx)
-{
-	if (ctx->c == '\'')
-		ctx->state = NORMAL;
-	else
-		ctx->token = strjoin_char(ctx);
-}
-
-static void	double_quote_process(t_tokenizer_ctx *ctx)
-{
-	if (ctx->c == '\"')
-		ctx->state = NORMAL;
-	else
-		ctx->token = strjoin_char(ctx);
-}
-
-char	**parse(t_tokenizer_ctx *ctx)
+t_cmd	*parse_cmd_list(t_tokenizer_ctx *ctx, t_cmd *cmd)
 {
 	size_t	i;
 
-	i = -1;
-	ctx->line_len = ft_strlen(ctx->line);
-	while (++i < ctx->line_len)
+	cmd = alloc_cmd(ctx, cmd);
+	cmd->builtin = get_builtin_type(ctx->tokens[0]);
+	i = 0;
+	while (ctx->tokens[i])
 	{
-		ctx->c = ctx->line[i];
-		if (ctx->state == NORMAL)
-			normal_process(ctx);
-		else if (ctx->state == IN_SINGLE_QUOTE)
-			single_quote_process(ctx);
-		else if (ctx->state == IN_DOUBLE_QUOTE)
-			double_quote_process(ctx);
+		cmd->argv[i] = ft_strdup(ctx->tokens[i]);
+		if (!cmd->argv[i])
+		{
+			free_cmd(cmd);
+			free_ctx(ctx, EXIT_FAILURE);
+		}
+		i++;
 	}
-	if (ctx->state != NORMAL)
-		error_exit(ctx, EXIT_SYNTAX_ERROR);
-	if (ctx->token)
-	{
-		add_token(ctx);
-		ctx->token = NULL;
-	}
-	return (ctx->tokens);
+	cmd->argv[i] = NULL;
+	return (cmd);
 }

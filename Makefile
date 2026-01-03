@@ -18,9 +18,12 @@ INCLUDES  = -I$(INC_DIR) -I$(INC_LIBS_DIR)
 
 SRC_FILES = main.c \
 			signal_handler.c \
+			tokenizer.c \
+			tokenizer_utils.c \
+			expander.c \
 			parser.c \
-			parser_utils.c \
 			executor.c \
+			executor_service.c \
 			free_utils.c \
 			error.c
 		

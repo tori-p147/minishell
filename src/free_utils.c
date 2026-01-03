@@ -6,31 +6,57 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/21 20:23:12 by vmatsuda          #+#    #+#             */
-/*   Updated: 2025/12/29 12:42:54 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/03 17:52:15 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
-void	free_tokens(char **tokens)
+void	free_cmd(t_cmd *cmd)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
-	while (tokens[i])
-		free(tokens[i++]);
-	free(tokens);
+	if (!cmd)
+		return ;
+	while (cmd->argv[i])
+		free(cmd->argv[i++]);
+	free(cmd->argv);
+	free(cmd);
 }
 
-void	free_ctx(t_tokenizer_ctx *ctx)
+void	free_array(char **array)
+{
+	size_t	i;
+
+	if (!array)
+		return ;
+	i = 0;
+	while (array[i])
+		free(array[i++]);
+	free(array);
+}
+
+void	free_ctx(t_tokenizer_ctx *ctx, int status)
 {
 	free(ctx->line);
 	free(ctx->token);
-	free_tokens(ctx->tokens);
+	free_array(ctx->tokens);
+	free_sh_ctx(ctx->shell, status);
+	exit(status);
 }
 
-void	free_and_exit(t_tokenizer_ctx *ctx, int status)
+void	free_sh_ctx(t_shell_ctx *sh_ctx, int status)
 {
-	free_ctx(ctx);
+	t_env	*tmp;
+
+	while (sh_ctx->env)
+	{
+		tmp = sh_ctx->env->next;
+		free(sh_ctx->env->key);
+		free(sh_ctx->env->value);
+		free(sh_ctx->env);
+		sh_ctx->env = tmp;
+	}
 	exit(status);
 }
