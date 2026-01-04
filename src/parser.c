@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 22:59:21 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/03 17:33:31 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/04 18:24:15 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ t_builtin	get_builtin_type(char *token)
 {
 	if (!ft_strncmp(token, "export", ft_strlen(token)))
 		return (BI_EXPORT);
+	else if (!ft_strncmp(token, "unset", ft_strlen(token)))
+		return (BI_UNSET);
 	return (BI_NONE);
 }
 
