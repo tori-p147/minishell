@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 20:18:19 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/03 18:35:17 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/04 15:16:18 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	print_envs(t_shell_ctx *sh_ctx)
 
 	curr = sh_ctx->env;
 	printf("curr %p\n", curr);
-	while (curr->next)
+	while (curr)
 	{
 		printf("next %p\n", curr->next);
 		printf("added key: %s \n", curr->key);
@@ -70,16 +70,14 @@ void	set_env(t_shell_ctx *sh_ctx, char **env)
 
 	i = 0;
 	env_entry = NULL;
-	while (env[i])
-		i++;
-	i = 0;
 	sh_ctx->env = NULL;
 	while (env[i])
 	{
 		// printf("env: %s\n", env[i]);
 		env_entry = ft_split(env[i], '=');
 		// printf("entry k: %s val: %s\n", env_entry[0], env_entry[1]);
-		sh_ctx->env = add_value(sh_ctx, env_entry);
+		add_env(sh_ctx, env_entry);
+		free_array(env_entry);
 		i++;
 	}
 }
@@ -96,6 +94,6 @@ int	main(int argc, char **argv, char **env)
 	init_ctx(&ctx, &sh_ctx);
 	read_input(&ctx);
 	rl_clear_history();
-	free_sh_ctx(&sh_ctx, EXIT_SUCCESS);
+	free_ctx(&ctx, EXIT_SUCCESS);
 	return (EXIT_SUCCESS);
 }

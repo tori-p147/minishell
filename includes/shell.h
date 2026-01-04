@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 20:18:34 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/03 17:50:10 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/04 15:11:03 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef struct s_env
 typedef struct s_shell_ctx
 {
 	t_env			*env;
+	int				status;
 }					t_shell_ctx;
 
 typedef enum e_builtin
@@ -85,6 +86,12 @@ void				setup_signals_shell(void);
 void				sigint_handler(int sig);
 
 /*
+validation.c
+*/
+size_t				is_var_char(char c);
+int					is_export_valid(t_cmd *cmd);
+
+/*
 tokenizer.c
 */
 char				**tokenize(t_tokenizer_ctx *ctx);
@@ -99,13 +106,18 @@ char				**parse(t_tokenizer_ctx *ctx);
 /*
 parser.c
 */
-t_cmd	*parse_cmd_list(t_tokenizer_ctx *ctx, t_cmd *cmd);
+t_cmd				*parse_cmd_list(t_tokenizer_ctx *ctx, t_cmd *cmd);
+
+/*
+expander.c
+*/
+char				*get_by_key(t_tokenizer_ctx *ctx, char *key);
 
 /*
 executor.c
 */
+void				add_env(t_shell_ctx *sh_ctx, char **entry);
 int					builtin_export(t_cmd *cmd, t_tokenizer_ctx *ctx);
-t_env				*add_value(t_shell_ctx *sh_ctx, char **env_entry);
 int					execute(t_cmd *cmd, t_tokenizer_ctx *ctx);
 
 /*
@@ -116,6 +128,8 @@ void				free_sh_ctx(t_shell_ctx *sh_ctx, int status);
 void				free_array(char **array);
 void				free_ctx(t_tokenizer_ctx *ctx, int status);
 
+void				print_envs(t_shell_ctx *sh_ctx);
+void				set_env(t_shell_ctx *sh_ctx, char **env);
 void				read_input(t_tokenizer_ctx *ctx);
 
 #endif

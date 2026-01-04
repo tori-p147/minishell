@@ -6,26 +6,19 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 16:09:21 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/03 16:27:24 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/04 15:18:58 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 #include "libft.h"
 
-size_t	is_var_char(char c)
-{
-	if (ft_isalnum(c) || c == '_')
-		return (1);
-	return (0);
-}
-
 char	*get_by_key(t_tokenizer_ctx *ctx, char *key)
 {
 	char	*val;
 	t_env	*curr;
 
-	val = "";
+	val = NULL;
 	curr = ctx->shell->env;
 	while (curr->next)
 	{
@@ -41,7 +34,6 @@ size_t	expand_variable(t_tokenizer_ctx *ctx, size_t i)
 	size_t	start;
 	char	*name;
 
-	// char *value;
 	start = i;
 	i++;
 	// case if $ next symbol not valid
