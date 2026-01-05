@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 22:32:00 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/05 18:21:25 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/05 18:50:13 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,47 +16,15 @@
 t_env	*find_env(t_env *env, char *key)
 {
 	t_env	*curr;
-	t_env	*curr;
 
 	curr = env;
 	while (curr)
-	curr = env;
-	while (curr)
 	{
-		if (ft_strncmp(key, curr->key, ft_strlen(key)) == 0)
-			return (curr);
-		curr = curr->next;
 		if (ft_strncmp(key, curr->key, ft_strlen(key)) == 0)
 			return (curr);
 		curr = curr->next;
 	}
 	return (NULL);
-}
-
-void	env_unset(t_shell_ctx *sh_ctx, char *key)
-{
-	t_env	*delete;
-	t_env	*prev;
-	t_env	*next;
-
-	delete = NULL;
-	prev = NULL;
-	next = NULL;
-	prev = sh_ctx->env;
-	while (prev->next)
-	{
-		if (ft_strncmp(key, prev->next->key, ft_strlen(key)) == 0)
-		{
-			delete = prev->next;
-			next = prev->next->next;
-			free(delete->key);
-			free(delete->value);
-			prev->next = next;
-			free(delete);
-			return ;
-		}
-		prev = prev->next;
-	}
 }
 
 void	env_unset(t_shell_ctx *sh_ctx, char *key)
@@ -130,10 +98,7 @@ void	env_set(t_shell_ctx *ctx, char *env)
 			found_env->value = ft_strdup(env_entry[1]);
 		print_envs(ctx);
 		printf("updated\n");
-		print_envs(ctx);
-		printf("updated\n");
 	}
-	free_array(env_entry);
 	free_array(env_entry);
 }
 
@@ -159,12 +124,23 @@ int	builtin_unset(t_cmd *cmd, t_tokenizer_ctx *ctx)
 	return (0);
 }
 
-int	builtin_unset(t_cmd *cmd, t_tokenizer_ctx *ctx)
+int	builtin_pwd(t_tokenizer_ctx *ctx)
 {
-	size_t	i;
+	char	*cur_dir_path;
+	char	**env_entry;
 
-	i = 1;
-	while (cmd->argv[i])
-		env_unset(ctx->shell, cmd->argv[i++]);
+	env_entry = malloc(sizeof(char *) * 3);
+	if (!env_entry)
+		free_ctx(ctx, EXIT_FAILURE);
+	cur_dir_path = getcwd(NULL, 0);
+	if (!cur_dir_path)
+		return (1);
+	env_entry[0] = ft_strdup("PWD");
+	env_entry[1] = ft_strdup(cur_dir_path);
+	env_entry[2] = NULL;
+	add_env(ctx->shell, env_entry);
+	printf("%s\n", cur_dir_path);
+	free_array(env_entry);
+	free(cur_dir_path);
 	return (0);
 }
