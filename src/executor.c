@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/20 19:48:35 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/05 17:44:38 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/05 18:06:46 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,10 @@ int	execute(t_cmd *cmd, t_tokenizer_ctx *ctx)
 	size_t	i;
 
 	i = 0;
-	// if (cmd->builtin == BI_EXPORT)
-	// 	return (builtin_export(cmd, ctx));
-	if (cmd->builtin == BI_PWD)
-		return (builtin_pwd(ctx));
+	(void)ctx;
+	if (cmd->builtin == BI_EXPORT)
+		return (builtin_export(cmd, ctx));
+	if (cmd->builtin == BI_UNSET)
+		return (builtin_unset(cmd, ctx));
 	return (0);
 }

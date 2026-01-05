@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 20:18:19 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/04 15:16:18 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/05 16:31:34 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	read_input(t_tokenizer_ctx *ctx)
 			add_history(ctx->line);
 			ctx->tokens = tokenize(ctx);
 			cmd = parse_cmd_list(ctx, cmd);
-			execute(cmd, ctx);
+			ctx->shell->status = execute(cmd, ctx);
 			free_cmd(cmd);
 			free_array(ctx->tokens);
 			free(ctx->token);
@@ -54,11 +54,9 @@ void	print_envs(t_shell_ctx *sh_ctx)
 	t_env	*curr;
 
 	curr = sh_ctx->env;
-	printf("curr %p\n", curr);
 	while (curr)
 	{
-		printf("next %p\n", curr->next);
-		printf("added key: %s \n", curr->key);
+		printf("added key: %s val: %s next %p\n", curr->key, curr->value, curr->next);
 		curr = curr->next;
 	}
 }
