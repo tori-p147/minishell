@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 22:32:00 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/04 18:28:48 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/05 16:39:54 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,27 +26,31 @@ t_env	*find_env(t_env *env, char *key)
 	}
 	return (NULL);
 }
+
 void	env_unset(t_shell_ctx *sh_ctx, char *key)
 {
-	t_env	*delete = NULL;
-	t_env	*prev = NULL;
-	t_env	*curr = NULL;
+	t_env	*delete;
+	t_env	*prev;
+	t_env	*next;
 
-	curr = sh_ctx->env;
-	while (curr)
+	delete = NULL;
+	prev = NULL;
+	next = NULL;
+	prev = sh_ctx->env;
+	while (prev->next)
 	{
-		if (ft_strncmp(key, curr->next->key, ft_strlen(key)) == 0)
+		if (ft_strncmp(key, prev->next->key, ft_strlen(key)) == 0)
 		{
-			prev = curr;
-			delete = curr->next;
-			break ;
+			delete = prev->next;
+			next = prev->next->next;
+			free(delete->key);
+			free(delete->value);
+			prev->next = next;
+			free(delete);
+			return ;
 		}
-		curr = curr->next;
+		prev = prev->next;
 	}
-	free(delete->key);
-	free(delete->value);
-	prev->next = delete->next;
-	free(delete);
 }
 
 void	add_env(t_shell_ctx *sh_ctx, char **entry)
@@ -84,16 +88,16 @@ void	env_set(t_shell_ctx *ctx, char *env)
 	{
 		add_env(ctx, env_entry);
 		print_envs(ctx);
+		printf("new added\n");
 	}
 	else
 	{
-		if (ft_strncmp(env_entry[1], found_env->value,
-				ft_strlen(env_entry[1])) == 0)
-			return ;
 		free(found_env->value);
 		found_env->value = NULL;
 		if (env_entry[1])
 			found_env->value = ft_strdup(env_entry[1]);
+		print_envs(ctx);
+		printf("updated\n");
 	}
 	free_array(env_entry);
 }
