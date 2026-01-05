@@ -6,9 +6,10 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 22:59:21 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/04 18:24:15 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/05 18:22:18 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "libft.h"
 #include "shell.h"
@@ -19,6 +20,10 @@ t_builtin	get_builtin_type(char *token)
 		return (BI_EXPORT);
 	else if (!ft_strncmp(token, "unset", ft_strlen(token)))
 		return (BI_UNSET);
+	else if (!ft_strncmp(token, "unset", ft_strlen(token)))
+		return (BI_UNSET);
+	if (!ft_strncmp(token, "pwd", ft_strlen(token)))
+		return (BI_PWD);
 	return (BI_NONE);
 }
 

@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 20:18:34 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/04 18:22:22 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/05 18:20:18 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,9 @@ typedef enum e_builtin
 {
 	BI_NONE,
 	// BI_CD,
-	// BI_PWD,
+	BI_PWD,
 	BI_EXPORT,
+	BI_UNSET,
 	BI_UNSET,
 	// BI_ENV,
 	// BI_EXIT
@@ -117,7 +118,9 @@ char				*get_by_key(t_tokenizer_ctx *ctx, char *key);
 executor.c
 */
 int					builtin_unset(t_cmd *cmd, t_tokenizer_ctx *ctx);
+int					builtin_unset(t_cmd *cmd, t_tokenizer_ctx *ctx);
 void				add_env(t_shell_ctx *sh_ctx, char **entry);
+int					builtin_pwd(t_tokenizer_ctx *ctx);
 int					builtin_export(t_cmd *cmd, t_tokenizer_ctx *ctx);
 int					execute(t_cmd *cmd, t_tokenizer_ctx *ctx);
 
