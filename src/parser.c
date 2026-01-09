@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 22:59:21 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/09 12:46:14 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/09 14:09:45 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ t_builtin	get_builtin_type(char *token)
 		return (BI_PWD);
 	else if (!ft_strncmp(token, "exit", token_len))
 		return (BI_EXIT);
+	else if (!ft_strncmp(token, "echo", token_len))
+		return (BI_ECHO);
 	return (BI_NONE);
 }
 
