@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 19:54:44 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/04 17:33:23 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/09 13:21:40 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,21 +24,20 @@ int	is_export_valid(t_cmd *cmd)
 {
 	size_t	i;
 	size_t	j;
-	size_t	len;
 	char	c;
 
 	i = 1;
 	while (cmd->argv[i])
 	{
 		j = -1;
-		len = ft_strlen(cmd->argv[i]);
-		while (++j < len)
+		while (++j < ft_strlen(cmd->argv[i]))
 		{
 			c = cmd->argv[i][j];
 			printf("curr: %c\n", c);
 			if (c == '=')
 				continue ;
-			else if ((j == 0 && (!ft_isalpha(c) || c == '_')) || !is_var_char(c))
+			else if ((j == 0 && (!ft_isalpha(c) || c == '_'))
+				|| !is_var_char(c))
 			{
 				printf("export: not an identifier: %s\n", cmd->argv[i]);
 				return (0);

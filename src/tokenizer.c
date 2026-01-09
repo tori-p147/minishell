@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/20 19:48:37 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/03 19:35:53 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/09 11:39:55 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,10 @@ char	**tokenize(t_tokenizer_ctx *ctx)
 			i = double_quote_process(ctx, i);
 	}
 	if (ctx->state != NORMAL)
-		error_exit(ctx, EXIT_SYNTAX_ERROR);
+	{
+		printf("minishell: syntax error: unexpected end of file\n");
+		ctx->shell->status = SYNTAX_ERROR;
+	}
 	if (ctx->token)
 	{
 		add_token(ctx);

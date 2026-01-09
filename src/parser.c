@@ -3,25 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 22:59:21 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/05 18:47:39 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:46:14 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "libft.h"
 #include "shell.h"
 
 t_builtin	get_builtin_type(char *token)
 {
-	if (!ft_strncmp(token, "export", ft_strlen(token)))
+	size_t	token_len;
+
+	token_len = ft_strlen(token);
+	if (!ft_strncmp(token, "export", token_len))
 		return (BI_EXPORT);
-	else if (!ft_strncmp(token, "unset", ft_strlen(token)))
+	else if (!ft_strncmp(token, "unset", token_len))
 		return (BI_UNSET);
-	if (!ft_strncmp(token, "pwd", ft_strlen(token)))
+	else if (!ft_strncmp(token, "pwd", token_len))
 		return (BI_PWD);
+	else if (!ft_strncmp(token, "exit", token_len))
+		return (BI_EXIT);
 	return (BI_NONE);
 }
 

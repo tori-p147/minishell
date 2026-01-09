@@ -26,7 +26,8 @@ SRC_FILES = main.c \
 			executor_service.c \
 			free_utils.c \
 			validation.c \
-			error.c
+			error.c \
+			env_utils.c
 		
 SOURCES = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 
