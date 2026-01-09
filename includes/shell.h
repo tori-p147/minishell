@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 20:18:34 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/09 13:19:26 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/09 15:53:38 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ typedef struct s_shell_ctx
 typedef enum e_builtin
 {
 	BI_NONE,
-	// BI_ECHO,
+	BI_ECHO,
 	// BI_CD,
 	BI_PWD,
 	BI_EXPORT,
@@ -116,12 +116,21 @@ expander.c
 char				*get_by_key(t_tokenizer_ctx *ctx, char *key);
 
 /*
+env_utils.c
+*/
+t_env				*find_env(t_env *env, char *key);
+void				env_set(t_shell_ctx *ctx, char *env);
+void				add_env(t_shell_ctx *sh_ctx, char **entry);
+void				env_unset(t_shell_ctx *sh_ctx, char *key);
+
+/*
 executor.c
 */
+int					builtin_echo(t_cmd *cmd);
 int					builtin_exit(t_cmd *cmd, t_tokenizer_ctx *ctx);
 int					builtin_pwd(t_tokenizer_ctx *ctx);
 int					builtin_unset(t_cmd *cmd, t_tokenizer_ctx *ctx);
-void				add_env(t_shell_ctx *sh_ctx, char **entry);
+
 int					builtin_pwd(t_tokenizer_ctx *ctx);
 int					builtin_export(t_cmd *cmd, t_tokenizer_ctx *ctx);
 int					execute(t_cmd *cmd, t_tokenizer_ctx *ctx);
