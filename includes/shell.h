@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 20:18:34 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/05 18:46:45 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/09 13:19:26 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,12 @@ typedef enum e_parser_state
 	IN_DOUBLE_QUOTE = 2
 }					t_parser_state;
 
-typedef enum e_exit_status
+typedef enum e_sh_status
 {
-	EXIT_SYNTAX_ERROR = 2
-}					t_exit_status;
+	SUCCESS = 0,
+	FAIL = 1,
+	SYNTAX_ERROR = 2
+}					t_sh_status;
 
 typedef struct s_env
 {
@@ -48,12 +50,13 @@ typedef struct s_shell_ctx
 typedef enum e_builtin
 {
 	BI_NONE,
+	// BI_ECHO,
 	// BI_CD,
 	BI_PWD,
 	BI_EXPORT,
 	BI_UNSET,
 	// BI_ENV,
-	// BI_EXIT
+	BI_EXIT
 }					t_builtin;
 
 // typedef enum e_redir_type
@@ -98,7 +101,6 @@ char				**tokenize(t_tokenizer_ctx *ctx);
 size_t				expand_variable(t_tokenizer_ctx *ctx, size_t i);
 void				print_tokens(char **tkns);
 char				*strjoin_char(t_tokenizer_ctx *ctx);
-void				error_exit(t_tokenizer_ctx *ctx, t_exit_status status);
 void				copy_tokens(t_tokenizer_ctx *ctx, size_t i);
 void				add_token(t_tokenizer_ctx *ctx);
 char				**parse(t_tokenizer_ctx *ctx);
@@ -116,6 +118,7 @@ char				*get_by_key(t_tokenizer_ctx *ctx, char *key);
 /*
 executor.c
 */
+int					builtin_exit(t_cmd *cmd, t_tokenizer_ctx *ctx);
 int					builtin_pwd(t_tokenizer_ctx *ctx);
 int					builtin_unset(t_cmd *cmd, t_tokenizer_ctx *ctx);
 void				add_env(t_shell_ctx *sh_ctx, char **entry);
@@ -131,6 +134,7 @@ void				free_sh_ctx(t_shell_ctx *sh_ctx, int status);
 void				free_array(char **array);
 void				free_ctx(t_tokenizer_ctx *ctx, int status);
 
+void				print_error(char *cmd_name, char *arg, int status);
 void				print_envs(t_shell_ctx *sh_ctx);
 void				set_env(t_shell_ctx *sh_ctx, char **env);
 void				read_input(t_tokenizer_ctx *ctx);
