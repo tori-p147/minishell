@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 20:18:19 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/05 16:31:34 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:46:04 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	print_envs(t_shell_ctx *sh_ctx)
 	}
 }
 
-void	set_env(t_shell_ctx *sh_ctx, char **env)
+void	set_env_list(t_shell_ctx *sh_ctx, char **env)
 {
 	size_t	i;
 	char	**env_entry;
@@ -74,7 +74,7 @@ void	set_env(t_shell_ctx *sh_ctx, char **env)
 		// printf("env: %s\n", env[i]);
 		env_entry = ft_split(env[i], '=');
 		// printf("entry k: %s val: %s\n", env_entry[0], env_entry[1]);
-		add_env(sh_ctx, env_entry);
+		set_env(sh_ctx, env_entry);
 		free_array(env_entry);
 		i++;
 	}
@@ -88,7 +88,7 @@ int	main(int argc, char **argv, char **env)
 	(void)argc;
 	(void)argv;
 	setup_signals_shell();
-	set_env(&sh_ctx, env);
+	set_env_list(&sh_ctx, env);
 	init_ctx(&ctx, &sh_ctx);
 	read_input(&ctx);
 	rl_clear_history();
