@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 22:32:00 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/09 15:59:22 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/15 18:29:24 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,14 +87,20 @@ int	builtin_exit(t_cmd *cmd, t_tokenizer_ctx *ctx)
 int	builtin_echo(t_cmd *cmd)
 {
 	size_t	i;
+	bool	is_n;
 
+	is_n = false;
 	i = 0;
+	is_n = ft_strlen(cmd->argv[1]) == 2 && !(ft_strncmp(cmd->argv[1], "-n", 2));
+	if (is_n)
+		i = 1;
 	while (cmd->argv[++i])
 	{
 		write(1, cmd->argv[i], ft_strlen(cmd->argv[i]));
 		if (cmd->argv[i + 1])
 			write(1, " ", 1);
 	}
-	write(1, "\n", 1);
+	if (!(is_n))
+		write(1, "\n", 1);
 	return (SUCCESS);
 }

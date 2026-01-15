@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 13:28:19 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/09 13:28:39 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/15 15:54:19 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ t_env	*find_env(t_env *env, char *key)
 	curr = env;
 	while (curr)
 	{
-		if (ft_strncmp(key, curr->key, ft_strlen(key)) == 0)
+		if (ft_strlen(key) == ft_strlen(curr->key) && !ft_strncmp(key,
+				curr->key, ft_strlen(curr->key)))
 			return (curr);
 		curr = curr->next;
 	}

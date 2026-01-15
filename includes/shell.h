@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 20:18:34 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/09 15:53:38 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/15 17:52:26 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
+# include <stdbool.h>
 # include <stddef.h>
 # include <stdlib.h>
 # include <unistd.h>
@@ -60,13 +61,24 @@ typedef enum e_builtin
 }					t_builtin;
 
 // typedef enum e_redir_type
+// {
+// 	R_IN,      // <
+// 	R_OUT,     // >
+// 	R_APPEND,  // >>
+// 	R_HEREDOC  // <<
+// } t_redir_type;
 
 // typedef struct s_redir
+// {
+// 	t_redir_type	type;
+// 	char			*file;
+// 	struct s_redir	*next;
+// } t_redir;
 
 typedef struct s_cmd
 {
 	char			**argv;
-	// t_redir *redirs; release > < >> <<
+	// t_redir *redirs;
 	t_builtin		builtin;
 	// struct s_cmd *next; releaze pipeline
 }					t_cmd;
@@ -113,7 +125,7 @@ t_cmd				*parse_cmd_list(t_tokenizer_ctx *ctx, t_cmd *cmd);
 /*
 expander.c
 */
-char				*get_by_key(t_tokenizer_ctx *ctx, char *key);
+char				*get_value_by_key(t_env *env, char *key);
 
 /*
 env_utils.c
