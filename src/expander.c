@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 16:09:21 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/15 16:01:15 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/15 17:29:54 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ size_t	expand_variable(t_tokenizer_ctx *ctx, size_t i)
 	size_t	start;
 	char	*var_name;
 	char	*value;
+	char	*tmp;
 
 	start = ++i;
 	// case if $ next symbol not valid
@@ -37,12 +38,22 @@ size_t	expand_variable(t_tokenizer_ctx *ctx, size_t i)
 	while (is_var_char(ctx->line[i]))
 		i++;
 	var_name = ft_substr(ctx->line, start, i - start);
-	// printf("expand var name = %s\n", name);
+	printf("expand var name = %s\n", var_name);
 	value = get_value_by_key(ctx->shell->env, var_name);
 	if (!value)
 		ctx->token = NULL;
 	else
-		ctx->token = ft_strdup(value);
+	{
+		if (!ctx->token)
+			ctx->token = ft_strdup(value);
+		else
+		{
+			tmp = ft_strjoin(ctx->token, value);
+			free(ctx->token);
+			ctx->token = tmp;
+			printf("ctx->token = %s\n", ctx->token);
+		}
+	}
 	free(var_name);
 	return (i - 1);
 }
