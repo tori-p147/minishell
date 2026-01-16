@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 20:18:34 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/16 16:37:25 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/16 19:34:52 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <stdbool.h>
 # include <stddef.h>
 # include <stdlib.h>
+# include <sys/stat.h>
 # include <unistd.h>
 
 typedef enum e_parser_state
@@ -32,7 +33,10 @@ typedef enum e_sh_status
 {
 	SUCCESS = 0,
 	FAIL = 1,
-	SYNTAX_ERROR = 2
+	SYNTAX_ERROR = 2,
+	PERMISSION_DENIED = 126,
+	IS_DIRECTORY = 127,
+	CMD_NOT_FOUND = 127
 }					t_sh_status;
 
 typedef struct s_env
@@ -166,9 +170,11 @@ void				free_ctx(t_tokenizer_ctx *ctx, int status);
 /*
 common_utils.c
 */
+char				*ft_double_strjoin(char *s1, char *s2, char *s3);
 void				print_redirs(t_redir *redirs);
 int					ft_strcmp(const char *s1, const char *s2);
 void				print_argv(char **argv);
+
 void				print_error(char *cmd_name, char *arg, int status);
 void				print_envs(t_shell_ctx *sh_ctx);
 void				set_env(t_shell_ctx *sh_ctx, char **env);
