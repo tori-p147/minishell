@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 22:32:00 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/15 18:29:24 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/16 14:38:10 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ int	builtin_echo(t_cmd *cmd)
 
 	is_n = false;
 	i = 0;
-	is_n = ft_strlen(cmd->argv[1]) == 2 && !(ft_strncmp(cmd->argv[1], "-n", 2));
+	is_n = !(ft_strcmp(cmd->argv[1], "-n"));
 	if (is_n)
 		i = 1;
 	while (cmd->argv[++i])
