@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 20:18:34 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/15 17:52:26 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/16 16:37:25 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,25 +60,25 @@ typedef enum e_builtin
 	BI_EXIT
 }					t_builtin;
 
-// typedef enum e_redir_type
-// {
-// 	R_IN,      // <
-// 	R_OUT,     // >
-// 	R_APPEND,  // >>
-// 	R_HEREDOC  // <<
-// } t_redir_type;
+typedef enum e_redir_type
+{
+	R_IN,     // <
+	R_OUT,    // >
+	R_APPEND, // >>
+	R_HEREDOC // <<
+}					t_redir_type;
 
-// typedef struct s_redir
-// {
-// 	t_redir_type	type;
-// 	char			*file;
-// 	struct s_redir	*next;
-// } t_redir;
+typedef struct s_redir
+{
+	t_redir_type	type;
+	char			*file;
+	struct s_redir	*next;
+}					t_redir;
 
 typedef struct s_cmd
 {
 	char			**argv;
-	// t_redir *redirs;
+	t_redir			*redirs;
 	t_builtin		builtin;
 	// struct s_cmd *next; releaze pipeline
 }					t_cmd;
@@ -118,9 +118,16 @@ void				add_token(t_tokenizer_ctx *ctx);
 char				**parse(t_tokenizer_ctx *ctx);
 
 /*
-parser.c
+cmd_parser.c
 */
-t_cmd				*parse_cmd_list(t_tokenizer_ctx *ctx, t_cmd *cmd);
+t_cmd				*parse_cmd(t_tokenizer_ctx *ctx, t_cmd *cmd);
+
+/*
+cmd_parser_utils.c
+*/
+int					is_redir_token(char *token);
+int					check_next_token(char *token);
+t_redir_type		get_redir_type(char *token);
 
 /*
 expander.c
@@ -150,11 +157,18 @@ int					execute(t_cmd *cmd, t_tokenizer_ctx *ctx);
 /*
 free_utils.c
 */
+void				free_input(t_tokenizer_ctx *ctx);
 void				free_cmd(t_cmd *cmd);
 void				free_sh_ctx(t_shell_ctx *sh_ctx, int status);
 void				free_array(char **array);
 void				free_ctx(t_tokenizer_ctx *ctx, int status);
 
+/*
+common_utils.c
+*/
+void				print_redirs(t_redir *redirs);
+int					ft_strcmp(const char *s1, const char *s2);
+void				print_argv(char **argv);
 void				print_error(char *cmd_name, char *arg, int status);
 void				print_envs(t_shell_ctx *sh_ctx);
 void				set_env(t_shell_ctx *sh_ctx, char **env);

@@ -3,14 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   free_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/21 20:23:12 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/04 15:16:48 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/16 12:10:33 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
+
+void	free_input(t_tokenizer_ctx *ctx)
+{
+	free(ctx->line);
+	free_array(ctx->tokens);
+	free(ctx->token);
+	ctx->tokens = NULL;
+	ctx->token = NULL;
+	ctx->line = NULL;
+}
 
 void	free_cmd(t_cmd *cmd)
 {
