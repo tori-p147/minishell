@@ -25,6 +25,8 @@ SRC_FILES = main.c \
 			cmd_parser_utils.c \
 			executor.c \
 			executor_service.c \
+			executor_external.c \
+			executor_path_utils.c \
 			free_utils.c \
 			validation.c \
 			error.c \

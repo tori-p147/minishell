@@ -1,0 +1,81 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   executor_path_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/22 20:39:31 by vmatsuda          #+#    #+#             */
+/*   Updated: 2026/01/22 20:40:23 by vmatsuda         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "libft.h"
+#include "shell.h"
+
+int	validate_path(char *path, char *cmd_name)
+{
+	struct stat	st;
+
+	if (stat(path, &st) == -1)
+	{
+		printf("%s: command not found\n", cmd_name);
+		return (CMD_NOT_FOUND);
+	}
+	else if (S_ISDIR(st.st_mode))
+	{
+		printf("minishell: %s: Is a directory\n", cmd_name);
+		return (IS_DIRECTORY);
+	}
+	else if (access(path, X_OK) == -1)
+	{
+		printf("minishell: %s: Permission denied\n", cmd_name);
+		return (PERMISSION_DENIED);
+	}
+	return (0);
+}
+
+char	*search_exists_path(char *arg0, t_tokenizer_ctx *ctx, char **path_dirs)
+{
+	char	*path_to_bin;
+	size_t	i;
+
+	i = -1;
+	while (path_dirs[++i])
+	{
+		path_to_bin = ft_double_strjoin(path_dirs[i], "/", arg0);
+		if (!path_to_bin)
+		{
+			free_array(path_dirs);
+			free_ctx(ctx, EXIT_FAILURE);
+		}
+		if (access(path_to_bin, X_OK) == 0)
+			return (path_to_bin);
+		free(path_to_bin);
+	}
+	return (NULL);
+}
+
+char	*resolve_path(char *arg0, t_tokenizer_ctx *ctx)
+{
+	char	*path_to_bin;
+	char	*path_env;
+	char	**path_dirs;
+
+	if (ft_strchr(arg0, '/'))
+		return (arg0);
+	path_env = get_value_by_key(ctx->shell->env, "PATH");
+	if (!path_env)
+		return (NULL);
+	path_dirs = ft_split(path_env, ':');
+	if (!path_dirs)
+		return (NULL);
+	path_to_bin = search_exists_path(arg0, ctx, path_dirs);
+	if (!path_to_bin)
+	{
+		free_array(path_dirs);
+		return (NULL);
+	}
+	free_array(path_dirs);
+	return (path_to_bin);
+}

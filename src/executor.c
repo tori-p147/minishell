@@ -6,18 +6,12 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/20 19:48:35 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/09 15:54:00 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/22 20:14:21 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "shell.h"
-
-/*
-how shell start programm:
-case 1: if command has / (abs path) -> execve()
-case 2: if ./ ../ (relative path) ->
-*/
 
 int	execute(t_cmd *cmd, t_tokenizer_ctx *ctx)
 {
@@ -31,5 +25,7 @@ int	execute(t_cmd *cmd, t_tokenizer_ctx *ctx)
 		return (builtin_exit(cmd, ctx));
 	else if (cmd->builtin == BI_ECHO)
 		return (builtin_echo(cmd));
+	else if (cmd->builtin == BI_NONE)
+		return (external(cmd, ctx));
 	return (SUCCESS);
 }

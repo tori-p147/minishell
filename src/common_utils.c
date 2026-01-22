@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 14:41:15 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/16 16:38:49 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/22 19:37:15 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,4 +51,19 @@ void	print_argv(char **argv)
 		printf("argv[%zu] = %s\n", j, argv[j]);
 		j++;
 	}
+}
+
+char	*ft_double_strjoin(char *s1, char *s2, char *s3)
+{
+	char	*tmp;
+	char	*res;
+
+	if (!s1 || !s2 || !s3)
+		return (NULL);
+	tmp = ft_strjoin(s1, s2);
+	if (!tmp)
+		return (NULL);
+	res = ft_strjoin(tmp, s3);
+	free(tmp);
+	return (res);
 }

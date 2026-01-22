@@ -6,12 +6,24 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 13:28:19 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/16 14:41:34 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/22 17:07:12 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "shell.h"
+
+size_t	count_envs_size(t_env *env)
+{
+	size_t	counter = 0;
+
+	while (env->next)
+	{
+		counter++;
+		env = env->next;
+	}
+	return (counter);
+}
 
 t_env	*find_env(t_env *env, char *key)
 {
