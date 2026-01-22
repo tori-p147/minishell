@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/20 19:48:37 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/09 11:39:55 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/22 17:58:20 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 static size_t	normal_process(t_tokenizer_ctx *ctx, size_t i)
 {
+	printf("i = %ld\n", i);
 	if (ctx->c == '\'')
 		ctx->state = IN_SINGLE_QUOTE;
 	else if (ctx->c == '\"')

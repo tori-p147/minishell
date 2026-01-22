@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 20:18:19 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/16 16:05:19 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/22 18:40:56 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,12 +64,13 @@ void	print_envs(t_shell_ctx *sh_ctx)
 	}
 }
 
-void	set_env(t_shell_ctx *sh_ctx, char **env)
+void	init_shell_ctx(t_shell_ctx *sh_ctx, char **env)
 {
 	size_t	i;
 	char	**env_entry;
 
 	i = 0;
+	sh_ctx->status = 0;
 	env_entry = NULL;
 	sh_ctx->env = NULL;
 	while (env[i])
@@ -91,7 +92,7 @@ int	main(int argc, char **argv, char **env)
 	(void)argc;
 	(void)argv;
 	setup_signals_shell();
-	set_env(&sh_ctx, env);
+	init_shell_ctx(&sh_ctx, env);
 	init_ctx(&ctx, &sh_ctx);
 	read_input(&ctx);
 	rl_clear_history();

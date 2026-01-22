@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 20:18:34 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/16 19:34:52 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/22 20:42:54 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <stddef.h>
 # include <stdlib.h>
 # include <sys/stat.h>
+# include <sys/wait.h>
 # include <unistd.h>
 
 typedef enum e_parser_state
@@ -141,6 +142,7 @@ char				*get_value_by_key(t_env *env, char *key);
 /*
 env_utils.c
 */
+size_t				count_envs_size(t_env *env);
 t_env				*find_env(t_env *env, char *key);
 void				env_set(t_shell_ctx *ctx, char *env);
 void				add_env(t_shell_ctx *sh_ctx, char **entry);
@@ -149,18 +151,23 @@ void				env_unset(t_shell_ctx *sh_ctx, char *key);
 /*
 executor.c
 */
+int					external(t_cmd *cmd, t_tokenizer_ctx *ctx);
 int					builtin_echo(t_cmd *cmd);
 int					builtin_exit(t_cmd *cmd, t_tokenizer_ctx *ctx);
 int					builtin_pwd(t_tokenizer_ctx *ctx);
 int					builtin_unset(t_cmd *cmd, t_tokenizer_ctx *ctx);
-
 int					builtin_pwd(t_tokenizer_ctx *ctx);
 int					builtin_export(t_cmd *cmd, t_tokenizer_ctx *ctx);
 int					execute(t_cmd *cmd, t_tokenizer_ctx *ctx);
+int					validate_path(char *path, char *cmd_name);
+char				*search_exists_path(char *arg0, t_tokenizer_ctx *ctx,
+						char **path_dirs);
+char				*resolve_path(char *arg0, t_tokenizer_ctx *ctx);
 
 /*
 free_utils.c
 */
+void				free_array_n(char **array, size_t i);
 void				free_input(t_tokenizer_ctx *ctx);
 void				free_cmd(t_cmd *cmd);
 void				free_sh_ctx(t_shell_ctx *sh_ctx, int status);
@@ -177,7 +184,7 @@ void				print_argv(char **argv);
 
 void				print_error(char *cmd_name, char *arg, int status);
 void				print_envs(t_shell_ctx *sh_ctx);
-void				set_env(t_shell_ctx *sh_ctx, char **env);
+void				init_shell_ctx(t_shell_ctx *sh_ctx, char **env);
 void				read_input(t_tokenizer_ctx *ctx);
 
 #endif

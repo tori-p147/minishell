@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/21 20:23:12 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/16 12:10:33 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/22 17:04:46 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,22 @@ void	free_cmd(t_cmd *cmd)
 	free(cmd);
 }
 
+void	free_array_n(char **array, size_t i)
+{
+	if (!array)
+		return ;
+	while (i--)
+		free(array[i]);
+	free(array);
+}
+
 void	free_array(char **array)
 {
 	size_t	i;
 
+	i = 0;
 	if (!array)
 		return ;
-	i = 0;
 	while (array[i])
 		free(array[i++]);
 	free(array);

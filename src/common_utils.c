@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 14:41:15 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/16 19:34:11 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/22 19:37:15 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ char	*ft_double_strjoin(char *s1, char *s2, char *s3)
 	tmp = ft_strjoin(s1, s2);
 	if (!tmp)
 		return (NULL);
-	res = ft_strjoin(tmp, s2);
+	res = ft_strjoin(tmp, s3);
 	free(tmp);
 	return (res);
 }
