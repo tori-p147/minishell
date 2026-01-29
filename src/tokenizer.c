@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/20 19:48:37 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/22 17:58:20 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/29 12:16:23 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ static size_t	normal_process(t_tokenizer_ctx *ctx, size_t i)
 		ctx->state = IN_DOUBLE_QUOTE;
 	else if (ctx->c == '$')
 		i = expand_variable(ctx, i);
+	else if (is_operator(ctx, i))
+		i = split_operator(ctx, i);
 	else if ((ctx->c == ' ' || ctx->c == '\t'))
 	{
 		add_token(ctx);

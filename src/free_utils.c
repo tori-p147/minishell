@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/21 20:23:12 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/22 17:04:46 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/29 17:18:38 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,24 @@ void	free_input(t_tokenizer_ctx *ctx)
 void	free_cmd(t_cmd *cmd)
 {
 	size_t	i;
+	t_redir	*tmp;
 
 	i = 0;
 	if (!cmd)
 		return ;
-	while (cmd->argv[i])
-		free(cmd->argv[i++]);
-	free(cmd->argv);
+	if (cmd->argv)
+	{
+		while (cmd->argv[i])
+			free(cmd->argv[i++]);
+		free(cmd->argv);
+	}
+	while (cmd->redirs)
+	{
+		tmp = cmd->redirs->next;
+		free(cmd->redirs->file);
+		free(cmd->redirs);
+		cmd->redirs = tmp;
+	}
 	free(cmd);
 }
 

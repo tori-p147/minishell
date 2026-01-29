@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 17:09:47 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/22 20:39:52 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/29 13:27:07 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ void	child_proc(t_cmd *cmd, t_tokenizer_ctx *ctx, char *path)
 		free_cmd(cmd);
 		free_ctx(ctx, EXIT_FAILURE);
 	}
+	apply_redirection(cmd);
 	execve(path, cmd->argv, envp);
 	perror("minishell");
 	free(path);
@@ -101,6 +102,7 @@ int	external(t_cmd *cmd, t_tokenizer_ctx *ctx)
 	char	*path;
 	int		exit_code;
 
+	printf("argv %s\n", cmd->argv[0]);
 	path = resolve_path(cmd->argv[0], ctx);
 	if (!path)
 	{

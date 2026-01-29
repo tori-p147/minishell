@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 20:39:31 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/22 20:40:23 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/29 10:38:06 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ char	*search_exists_path(char *arg0, t_tokenizer_ctx *ctx, char **path_dirs)
 	while (path_dirs[++i])
 	{
 		path_to_bin = ft_double_strjoin(path_dirs[i], "/", arg0);
+		printf("path_to_bin = %s\n", path_to_bin);
 		if (!path_to_bin)
 		{
 			free_array(path_dirs);
@@ -76,6 +77,7 @@ char	*resolve_path(char *arg0, t_tokenizer_ctx *ctx)
 		free_array(path_dirs);
 		return (NULL);
 	}
+	printf("FOUND PATH = %s\n", path_to_bin);
 	free_array(path_dirs);
 	return (path_to_bin);
 }

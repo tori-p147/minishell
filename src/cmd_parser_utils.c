@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 14:23:13 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/16 15:54:01 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/29 18:46:05 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,8 @@
 int	is_redir_token(char *token)
 {
 	printf("is redir token = %s\n", token);
-	if (!ft_strcmp(token, "<") || !ft_strcmp(token, ">"))
-		return (1);
-	else if (!ft_strcmp(token, "<<") || !ft_strcmp(token, ">>"))
+	if (!ft_strcmp(token, "<") || !ft_strcmp(token, ">") || !ft_strcmp(token,
+			"<<") || !ft_strcmp(token, ">>"))
 		return (1);
 	return (0);
 }
@@ -43,13 +42,14 @@ int	check_next_token(char *next_token)
 
 t_redir_type	get_redir_type(char *token)
 {
-	if (ft_strcmp(token, "<"))
+	if (!ft_strcmp(token, "<"))
 		return (R_IN);
-	else if (ft_strcmp(token, ">"))
+	else if (!ft_strcmp(token, ">"))
 		return (R_OUT);
-	else if (ft_strcmp(token, "<<"))
+	else if (!ft_strcmp(token, ">>"))
 		return (R_APPEND);
-	if (ft_strcmp(token, ">>"))
+	if (!ft_strcmp(token, "<<"))
 		return (R_HEREDOC);
-	return (R_IN);
+	printf("unknown type\n");
+	return (R_HEREDOC);
 }

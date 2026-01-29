@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 20:18:19 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/22 18:40:56 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/29 17:54:09 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ void	read_input(t_tokenizer_ctx *ctx)
 				ctx->line = readline(prompt);
 				continue ;
 			}
+			printf("cmd type %d\n", cmd->builtin);
 			ctx->shell->status = execute(cmd, ctx);
 			free_cmd(cmd);
 			free_input(ctx);
