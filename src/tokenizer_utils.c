@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:38:11 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/29 12:16:39 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/30 20:12:57 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ void	add_token(t_tokenizer_ctx *ctx)
 		ctx->tokens[i] = ctx->token;
 		ctx->tokens[i + 1] = NULL;
 	}
+	ctx->token = NULL;
 }
 
 char	*strjoin_char(t_tokenizer_ctx *ctx)

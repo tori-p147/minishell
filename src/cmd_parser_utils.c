@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 14:23:13 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/29 18:46:05 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/02/03 18:40:18 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 int	is_redir_token(char *token)
 {
-	printf("is redir token = %s\n", token);
 	if (!ft_strcmp(token, "<") || !ft_strcmp(token, ">") || !ft_strcmp(token,
 			"<<") || !ft_strcmp(token, ">>"))
 		return (1);

@@ -6,13 +6,14 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 20:18:34 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/29 18:14:29 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/02/04 19:01:17 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SHELL_H
 # define SHELL_H
 
+# include <errno.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
@@ -154,7 +155,7 @@ void				env_unset(t_shell_ctx *sh_ctx, char *key);
 /*
 executor.c
 */
-void				apply_redirection(t_cmd *cmd);
+int					apply_redirection(t_cmd *cmd);
 int					external(t_cmd *cmd, t_tokenizer_ctx *ctx);
 int					builtin_echo(t_cmd *cmd);
 int					builtin_exit(t_cmd *cmd, t_tokenizer_ctx *ctx);
@@ -163,7 +164,6 @@ int					builtin_unset(t_cmd *cmd, t_tokenizer_ctx *ctx);
 int					builtin_pwd(t_tokenizer_ctx *ctx);
 int					builtin_export(t_cmd *cmd, t_tokenizer_ctx *ctx);
 int					execute(t_cmd *cmd, t_tokenizer_ctx *ctx);
-int					validate_path(char *path, char *cmd_name);
 char				*search_exists_path(char *arg0, t_tokenizer_ctx *ctx,
 						char **path_dirs);
 char				*resolve_path(char *arg0, t_tokenizer_ctx *ctx);

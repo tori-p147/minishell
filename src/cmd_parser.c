@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 22:59:21 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/29 18:40:06 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/02/04 19:10:31 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,24 +30,13 @@ t_builtin	get_builtin_type(char *argv0)
 
 t_cmd	*alloc_cmd(t_tokenizer_ctx *ctx, t_cmd *cmd)
 {
-	// size_t	argv_count;
 	cmd = malloc(sizeof(t_cmd));
 	if (!cmd)
 		free_ctx(ctx, EXIT_FAILURE);
-	// cmd->builtin = get_builtin_type(ctx->tokens[0]);
+	cmd->builtin = BI_NONE;
 	cmd->argv = NULL;
 	cmd->argc = 0;
 	cmd->redirs = NULL;
-	// argv_count = 0;
-	// while (ctx->tokens[argv_count])
-	// 	argv_count++;
-	// cmd->argv = malloc(sizeof(char *) * (cmd->argc + 1));
-	// if (!cmd->argv)
-	// {
-	// 	free_cmd(cmd);
-	// 	free_ctx(ctx, EXIT_FAILURE);
-	// }
-	// ft_memset(cmd->argv, 0, sizeof(char *) * (argv_count + 1));
 	return (cmd);
 }
 
@@ -65,14 +54,12 @@ t_redir	*add_redir(char *token, char *next_token, t_cmd *cmd)
 	if (!cmd->redirs)
 	{
 		cmd->redirs = new_redir;
-		printf("added new %d\n", new_redir->type);
 		return (cmd->redirs);
 	}
 	last = cmd->redirs;
 	while (last->next)
 		last = last->next;
 	last->next = new_redir;
-	printf("added %d\n", new_redir->type);
 	return (cmd->redirs);
 }
 
@@ -114,7 +101,7 @@ t_cmd	*parse_cmd(t_tokenizer_ctx *ctx, t_cmd *cmd)
 	{
 		if (is_redir_token(ctx->tokens[i]))
 		{
-			if (!check_next_token(ctx->tokens[i + 1]))
+			if (!ctx->tokens[i + 1] || !check_next_token(ctx->tokens[i + 1]))
 			{
 				free_cmd(cmd);
 				ctx->shell->status = 2;
@@ -126,13 +113,9 @@ t_cmd	*parse_cmd(t_tokenizer_ctx *ctx, t_cmd *cmd)
 			i += 2;
 		}
 		else
-		{
-			add_argv(ctx->tokens[i], ctx, cmd);
-			i++;
-		}
+			add_argv(ctx->tokens[i++], ctx, cmd);
 	}
-	// print_redirs(cmd->redirs);
-	// print_argv(cmd->argv);
-	cmd->builtin = get_builtin_type(cmd->argv[0]);
+	if (cmd->argv)
+		cmd->builtin = get_builtin_type(cmd->argv[0]);
 	return (cmd);
 }
