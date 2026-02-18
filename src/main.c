@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 20:18:19 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/22 18:40:56 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/02/04 18:22:06 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void	read_input(t_tokenizer_ctx *ctx)
 			add_history(ctx->line);
 			ctx->tokens = tokenize(ctx);
 			cmd = parse_cmd(ctx, cmd);
+			printf("cmd OK\n");
 			if (!cmd)
 			{
 				free_input(ctx);

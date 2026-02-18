@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 16:09:21 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/22 18:37:59 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/02/04 19:11:07 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ char	*get_value_by_key(t_env *env, char *key)
 
 	found_env = find_env(env, key);
 	if (!found_env)
-		return (NULL);
-	// printf("found env VALUE = %s\n", found_env->value);
+		return ("");
+	//printf("found env VALUE = %s\n", found_env->value);
 	return (found_env->value);
 }
 
@@ -48,8 +48,6 @@ size_t	expand_variable(t_tokenizer_ctx *ctx, size_t i)
 		printf("expand var name = %s\n", var_name);
 		value = get_value_by_key(ctx->shell->env, var_name);
 		free(var_name);
-		if (!value)
-			ctx->token = NULL;
 	}
 	if (!ctx->token)
 		ctx->token = ft_strdup(value);

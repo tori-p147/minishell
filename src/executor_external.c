@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 17:09:47 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/22 20:39:52 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/02/04 19:03:15 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,16 @@ void	child_proc(t_cmd *cmd, t_tokenizer_ctx *ctx, char *path)
 
 	envp = convert_envp(ctx->shell->env);
 	if (!envp)
-	{
-		free(path);
-		free_cmd(cmd);
-		free_ctx(ctx, EXIT_FAILURE);
-	}
+		exit(1);
+	if (apply_redirection(cmd))
+		exit(1);
 	execve(path, cmd->argv, envp);
-	perror("minishell");
-	free(path);
+	printf("minishell: %s: %s\n", cmd->argv[0], strerror(errno));
+	free_array(envp);
+	if (errno == ENOENT)
+		exit(127);
+	else if (errno == EACCES)
+		exit(126);
 	exit(1);
 }
 
@@ -81,37 +83,45 @@ how	fork(void) working:
 int	do_fork(t_cmd *cmd, t_tokenizer_ctx *ctx, char *path)
 {
 	pid_t	pid;
-	int		exit_code;
 
 	pid = fork();
 	if (pid == -1)
 	{
-		perror("fork");
-		exit_code = FAIL;
+		perror("minishell: fork");
+		return (FAIL);
 	}
 	else if (pid == 0)
+	{
 		child_proc(cmd, ctx, path);
+	}
 	else
-		exit_code = parent_proc(pid);
-	return (exit_code);
+		return (parent_proc(pid));
+	return (FAIL);
 }
 
 int	external(t_cmd *cmd, t_tokenizer_ctx *ctx)
 {
 	char	*path;
 	int		exit_code;
+	pid_t	pid;
 
+	if (!cmd->argv)
+	{
+		pid = fork();
+		if (pid == 0)
+		{
+			if (apply_redirection(cmd))
+				exit(1);
+			exit(0);
+		}
+		return (parent_proc(pid));
+	}
+	printf("argv %s\n", cmd->argv[0]);
 	path = resolve_path(cmd->argv[0], ctx);
 	if (!path)
 	{
 		printf("%s: command not found\n", cmd->argv[0]);
 		return (CMD_NOT_FOUND);
-	}
-	exit_code = validate_path(path, cmd->argv[0]);
-	if (exit_code != 0)
-	{
-		free(path);
-		return (exit_code);
 	}
 	exit_code = do_fork(cmd, ctx, path);
 	free(path);

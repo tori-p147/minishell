@@ -6,34 +6,12 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 20:39:31 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/22 20:40:23 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/02/04 19:01:05 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "shell.h"
-
-int	validate_path(char *path, char *cmd_name)
-{
-	struct stat	st;
-
-	if (stat(path, &st) == -1)
-	{
-		printf("%s: command not found\n", cmd_name);
-		return (CMD_NOT_FOUND);
-	}
-	else if (S_ISDIR(st.st_mode))
-	{
-		printf("minishell: %s: Is a directory\n", cmd_name);
-		return (IS_DIRECTORY);
-	}
-	else if (access(path, X_OK) == -1)
-	{
-		printf("minishell: %s: Permission denied\n", cmd_name);
-		return (PERMISSION_DENIED);
-	}
-	return (0);
-}
 
 char	*search_exists_path(char *arg0, t_tokenizer_ctx *ctx, char **path_dirs)
 {
@@ -44,6 +22,7 @@ char	*search_exists_path(char *arg0, t_tokenizer_ctx *ctx, char **path_dirs)
 	while (path_dirs[++i])
 	{
 		path_to_bin = ft_double_strjoin(path_dirs[i], "/", arg0);
+		printf("path_to_bin = %s\n", path_to_bin);
 		if (!path_to_bin)
 		{
 			free_array(path_dirs);
@@ -76,6 +55,7 @@ char	*resolve_path(char *arg0, t_tokenizer_ctx *ctx)
 		free_array(path_dirs);
 		return (NULL);
 	}
+	printf("FOUND PATH = %s\n", path_to_bin);
 	free_array(path_dirs);
 	return (path_to_bin);
 }

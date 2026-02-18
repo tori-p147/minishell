@@ -6,12 +6,42 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:38:11 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/16 14:43:47 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/30 20:12:57 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "shell.h"
+
+size_t is_operator(t_tokenizer_ctx *ctx, size_t i)
+{
+	if (ctx->c == '<' || ctx->c == '>')
+		return (1);
+	else if (!ft_strncmp(&ctx->line[i], "<<", 2) || !ft_strncmp(&ctx->line[i], ">>", 2))
+		return (1);
+	return (0);
+}
+
+size_t split_operator(t_tokenizer_ctx *ctx, size_t i)
+{
+	if (!ft_strncmp(&ctx->line[i], "<<", 2))
+	{
+		ctx->token = ft_strdup("<<");
+		i = i + 1;
+	}
+	else if (!ft_strncmp(&ctx->line[i], ">>", 2))
+	{
+		ctx->token = ft_strdup(">>");
+		i = i + 1;
+	}
+	else if (ctx->c == '>')
+		ctx->token = ft_strdup(">");
+	else if (ctx->c == '<')
+		ctx->token = ft_strdup("<");
+	add_token(ctx);
+	ctx->token = NULL;
+	return (i);
+}
 
 void	copy_tokens(t_tokenizer_ctx *ctx, size_t i)
 {
@@ -52,6 +82,7 @@ void	add_token(t_tokenizer_ctx *ctx)
 		ctx->tokens[i] = ctx->token;
 		ctx->tokens[i + 1] = NULL;
 	}
+	ctx->token = NULL;
 }
 
 char	*strjoin_char(t_tokenizer_ctx *ctx)
@@ -79,16 +110,4 @@ char	*strjoin_char(t_tokenizer_ctx *ctx)
 	ctx->token[token_len] = ctx->c;
 	ctx->token[token_len + 1] = 0;
 	return (ctx->token);
-}
-
-void	print_tokens(char **tkns)
-{
-	size_t	j;
-
-	j = 0;
-	while (tkns[j])
-	{
-		printf("tokens[%zu] = %s\n", j, tkns[j]);
-		j++;
-	}
 }

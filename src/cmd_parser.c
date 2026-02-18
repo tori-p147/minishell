@@ -6,45 +6,37 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 22:59:21 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/16 16:15:31 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/02/04 19:10:31 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "shell.h"
 
-t_builtin	get_builtin_type(char *token)
+t_builtin	get_builtin_type(char *argv0)
 {
-	if (!ft_strcmp(token, "export"))
+	if (!ft_strcmp(argv0, "export"))
 		return (BI_EXPORT);
-	else if (!ft_strcmp(token, "unset"))
+	else if (!ft_strcmp(argv0, "unset"))
 		return (BI_UNSET);
-	else if (!ft_strcmp(token, "pwd"))
+	else if (!ft_strcmp(argv0, "pwd"))
 		return (BI_PWD);
-	else if (!ft_strcmp(token, "exit"))
+	else if (!ft_strcmp(argv0, "exit"))
 		return (BI_EXIT);
-	else if (!ft_strcmp(token, "echo"))
+	else if (!ft_strcmp(argv0, "echo"))
 		return (BI_ECHO);
 	return (BI_NONE);
 }
 
 t_cmd	*alloc_cmd(t_tokenizer_ctx *ctx, t_cmd *cmd)
 {
-	size_t	argv_count;
-
 	cmd = malloc(sizeof(t_cmd));
 	if (!cmd)
 		free_ctx(ctx, EXIT_FAILURE);
-	argv_count = 0;
-	while (ctx->tokens[argv_count])
-		argv_count++;
-	cmd->argv = malloc(sizeof(char *) * (argv_count + 1));
-	if (!cmd->argv)
-	{
-		free_cmd(cmd);
-		free_ctx(ctx, EXIT_FAILURE);
-	}
-	ft_memset(cmd->argv, 0, sizeof(char *) * (argv_count + 1));
+	cmd->builtin = BI_NONE;
+	cmd->argv = NULL;
+	cmd->argc = 0;
+	cmd->redirs = NULL;
 	return (cmd);
 }
 
@@ -62,20 +54,20 @@ t_redir	*add_redir(char *token, char *next_token, t_cmd *cmd)
 	if (!cmd->redirs)
 	{
 		cmd->redirs = new_redir;
-		printf("added new %d\n", new_redir->type);
 		return (cmd->redirs);
 	}
 	last = cmd->redirs;
 	while (last->next)
 		last = last->next;
 	last->next = new_redir;
-	printf("added %d\n", new_redir->type);
 	return (cmd->redirs);
 }
 
-char	*add_argv(char *token, t_tokenizer_ctx *ctx, t_cmd *cmd)
+void	add_argv(char *token, t_tokenizer_ctx *ctx, t_cmd *cmd)
 {
 	char	*new_argv;
+	char	**tmp;
+	size_t	i;
 
 	new_argv = ft_strdup(token);
 	if (!new_argv)
@@ -83,7 +75,20 @@ char	*add_argv(char *token, t_tokenizer_ctx *ctx, t_cmd *cmd)
 		free_cmd(cmd);
 		free_ctx(ctx, EXIT_FAILURE);
 	}
-	return (new_argv);
+	tmp = malloc(sizeof(char *) * (cmd->argc + 2));
+	if (!tmp)
+	{
+		free_cmd(cmd);
+		free_ctx(ctx, EXIT_FAILURE);
+	}
+	i = -1;
+	while (++i < cmd->argc)
+		tmp[i] = cmd->argv[i];
+	tmp[cmd->argc] = new_argv;
+	tmp[cmd->argc + 1] = NULL;
+	free(cmd->argv);
+	cmd->argv = tmp;
+	cmd->argc++;
 }
 
 t_cmd	*parse_cmd(t_tokenizer_ctx *ctx, t_cmd *cmd)
@@ -91,28 +96,26 @@ t_cmd	*parse_cmd(t_tokenizer_ctx *ctx, t_cmd *cmd)
 	size_t	i;
 
 	cmd = alloc_cmd(ctx, cmd);
-	cmd->builtin = get_builtin_type(ctx->tokens[0]);
-	i = -1;
-	while (ctx->tokens[++i])
+	i = 0;
+	while (ctx->tokens[i])
 	{
 		if (is_redir_token(ctx->tokens[i]))
 		{
-			if (!check_next_token(ctx->tokens[i + 1]))
+			if (!ctx->tokens[i + 1] || !check_next_token(ctx->tokens[i + 1]))
 			{
 				free_cmd(cmd);
 				ctx->shell->status = 2;
 				return (NULL);
 			}
 			cmd->redirs = add_redir(ctx->tokens[i], ctx->tokens[i + 1], cmd);
-			print_redirs(cmd->redirs);
 			if (!cmd->redirs)
 				free_ctx(ctx, EXIT_FAILURE);
-			i++;
-			continue ;
+			i += 2;
 		}
-		cmd->argv[i] = add_argv(ctx->tokens[i], ctx, cmd);
+		else
+			add_argv(ctx->tokens[i++], ctx, cmd);
 	}
-	cmd->argv[i] = NULL;
-	print_argv(cmd->argv);
+	if (cmd->argv)
+		cmd->builtin = get_builtin_type(cmd->argv[0]);
 	return (cmd);
 }

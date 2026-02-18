@@ -6,13 +6,14 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 20:18:34 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/22 20:42:54 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/02/04 19:01:17 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SHELL_H
 # define SHELL_H
 
+# include <errno.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
@@ -67,10 +68,10 @@ typedef enum e_builtin
 
 typedef enum e_redir_type
 {
-	R_IN,     // <
-	R_OUT,    // >
-	R_APPEND, // >>
-	R_HEREDOC // <<
+	R_IN = 0,     // <
+	R_OUT = 1,    // >
+	R_APPEND = 2, // >>
+	R_HEREDOC = 3 // <<
 }					t_redir_type;
 
 typedef struct s_redir
@@ -83,6 +84,7 @@ typedef struct s_redir
 typedef struct s_cmd
 {
 	char			**argv;
+	size_t			argc;
 	t_redir			*redirs;
 	t_builtin		builtin;
 	// struct s_cmd *next; releaze pipeline
@@ -114,6 +116,8 @@ int					is_export_valid(t_cmd *cmd);
 /*
 tokenizer.c
 */
+size_t				split_operator(t_tokenizer_ctx *ctx, size_t i);
+size_t				is_operator(t_tokenizer_ctx *ctx, size_t i);
 char				**tokenize(t_tokenizer_ctx *ctx);
 size_t				expand_variable(t_tokenizer_ctx *ctx, size_t i);
 void				print_tokens(char **tkns);
@@ -151,6 +155,7 @@ void				env_unset(t_shell_ctx *sh_ctx, char *key);
 /*
 executor.c
 */
+int					apply_redirection(t_cmd *cmd);
 int					external(t_cmd *cmd, t_tokenizer_ctx *ctx);
 int					builtin_echo(t_cmd *cmd);
 int					builtin_exit(t_cmd *cmd, t_tokenizer_ctx *ctx);
@@ -159,7 +164,6 @@ int					builtin_unset(t_cmd *cmd, t_tokenizer_ctx *ctx);
 int					builtin_pwd(t_tokenizer_ctx *ctx);
 int					builtin_export(t_cmd *cmd, t_tokenizer_ctx *ctx);
 int					execute(t_cmd *cmd, t_tokenizer_ctx *ctx);
-int					validate_path(char *path, char *cmd_name);
 char				*search_exists_path(char *arg0, t_tokenizer_ctx *ctx,
 						char **path_dirs);
 char				*resolve_path(char *arg0, t_tokenizer_ctx *ctx);

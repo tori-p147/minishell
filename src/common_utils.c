@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 14:41:15 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/22 19:37:15 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/29 12:16:49 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,18 @@ void	print_argv(char **argv)
 	while (argv[j])
 	{
 		printf("argv[%zu] = %s\n", j, argv[j]);
+		j++;
+	}
+}
+
+void	print_tokens(char **tkns)
+{
+	size_t	j;
+
+	j = 0;
+	while (tkns[j])
+	{
+		printf("tokens[%zu] = %s\n", j, tkns[j]);
 		j++;
 	}
 }
