@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 22:32:00 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/12 14:32:05 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/01/15 20:33:37 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,14 +150,19 @@ int	cd_home(t_tokenizer_ctx *ctx)
 	
 }
 
-int cd_oldpwd(t_cmd *cmd, t_tokenizer_ctx *ctx)
+int	cd_oldpwd(t_cmd *cmd, t_tokenizer_ctx *ctx)
 {
 	
 }
-
-int cd_res_abs_path(t_cmd *cmd, t_tokenizer_ctx *ctx)
+int try_chdir(t_cmd *cmd, char *oldpwd)
 {
-	
+	if (chdir(cmd->argv[1]) != 0)
+	{
+		print_error(cmd->argv[0], cmd->argv[1], NO_SUCH_FILE_OR_DIR);
+		free(oldpwd);
+		return (1);
+	}
+	return (0);
 }
 
 int	cd_res_abs_path(t_cmd *cmd, t_tokenizer_ctx *ctx)
@@ -166,14 +171,9 @@ int	cd_res_abs_path(t_cmd *cmd, t_tokenizer_ctx *ctx)
 	char	*oldpwdenv;
 	char	*newpwd;
 	char	*newpwdenv;
-
+	
 	oldpwd = getcwd(NULL, 0);
-	if (chdir(cmd->argv[1]) != 0)
-	{
-		print_error(cmd->argv[0], cmd->argv[1], NO_SUCH_FILE_OR_DIR);
-		free(oldpwd);
-		return (1);
-	}
+	
 	printf("oldpwd %s\n", oldpwd);
 	if (oldpwd)
 	{
@@ -196,17 +196,19 @@ int	cd_res_abs_path(t_cmd *cmd, t_tokenizer_ctx *ctx)
 
 int	builtin_cd(t_cmd *cmd, t_tokenizer_ctx *ctx)
 {
-	if (!cmd->argv[1] 
-		|| (ft_strlen(cmd->argv[1]) == 1 && cmd->argv[1][0] == '~') 
-		|| (ft_strlen(cmd->argv[1]) == 2 && !ft_strncmp(cmd->argv[1], '~/', 2)))
-	{
-		return(cd_home(ctx));
-	}
-	else if (ft_strlen(cmd->argv[1]) == 1 && cmd->argv[1][0] == '-')
-		return(cd_oldpwd());
-	else if (ft_strlen(cmd->argv[1]) > 1 && (cmd->argv[1][0] == '/'
-		|| ft_strncmp(cmd->argv[1], '..', 2)))
-		return(cd_res_abs_path(cmd, ctx));
+	char	*oldpwd;
+	int res;
+
+	oldpwd = getcwd(NULL, 0);
+	if (try_chdir(cmd, oldpwd))
+		return (1);
+	if (!cmd->argv[1] || !ft_strnchar(cmd->argv[1], '~'))
+		return (cd_home(ctx));
+	else if (cmd->argv[1] && ft_strlen(cmd->argv[1]) == 1
+		&& cmd->argv[1][0] == '-')
+		return (cd_oldpwd(cmd, ctx));
+	else
+		return (cd_res_abs_path(cmd, ctx));
 	return (0);
 }
 
