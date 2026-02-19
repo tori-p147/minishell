@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/20 19:48:37 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/03 19:35:53 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/02/03 18:39:49 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,16 @@ static size_t	normal_process(t_tokenizer_ctx *ctx, size_t i)
 		ctx->state = IN_DOUBLE_QUOTE;
 	else if (ctx->c == '$')
 		i = expand_variable(ctx, i);
+	else if (is_operator(ctx, i))
+	{
+		if (ctx->token)
+			add_token(ctx);
+		i = split_operator(ctx, i);
+	}
 	else if ((ctx->c == ' ' || ctx->c == '\t'))
-	{
 		add_token(ctx);
-		ctx->token = NULL;
-	}
 	else
-	{
 		ctx->token = strjoin_char(ctx);
-		printf("current %s\n", ctx->token);
-	}
 	return (i);
 }
 
@@ -70,12 +70,15 @@ char	**tokenize(t_tokenizer_ctx *ctx)
 			i = double_quote_process(ctx, i);
 	}
 	if (ctx->state != NORMAL)
-		error_exit(ctx, EXIT_SYNTAX_ERROR);
+	{
+		printf("minishell: syntax error: unexpected end of file\n");
+		ctx->shell->status = SYNTAX_ERROR;
+	}
 	if (ctx->token)
 	{
 		add_token(ctx);
 		ctx->token = NULL;
 	}
-	print_tokens(ctx->tokens);
+	// print_tokens(ctx->tokens);
 	return (ctx->tokens);
 }

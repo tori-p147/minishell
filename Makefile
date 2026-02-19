@@ -21,12 +21,17 @@ SRC_FILES = main.c \
 			tokenizer.c \
 			tokenizer_utils.c \
 			expander.c \
-			parser.c \
+			cmd_parser.c \
+			cmd_parser_utils.c \
 			executor.c \
 			executor_service.c \
+			executor_external.c \
+			executor_path_utils.c \
 			free_utils.c \
 			validation.c \
-			error.c
+			error.c \
+			env_utils.c \
+			common_utils.c
 		
 SOURCES = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 

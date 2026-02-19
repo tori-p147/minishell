@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 20:18:19 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/12 12:46:04 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/02/19 20:02:39 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,18 @@ void	read_input(t_tokenizer_ctx *ctx)
 		{
 			add_history(ctx->line);
 			ctx->tokens = tokenize(ctx);
-			cmd = parse_cmd_list(ctx, cmd);
+			cmd = parse_cmd(ctx, cmd);
+			printf("cmd OK\n");
+			if (!cmd)
+			{
+				free_input(ctx);
+				ctx->line = readline(prompt);
+				continue ;
+			}
 			ctx->shell->status = execute(cmd, ctx);
 			free_cmd(cmd);
-			free_array(ctx->tokens);
-			free(ctx->token);
-			ctx->tokens = NULL;
-			ctx->token = NULL;
+			free_input(ctx);
 		}
-		free(ctx->line);
 		ctx->line = readline(prompt);
 	}
 }
@@ -56,7 +59,8 @@ void	print_envs(t_shell_ctx *sh_ctx)
 	curr = sh_ctx->env;
 	while (curr)
 	{
-		printf("added key: %s val: %s next %p\n", curr->key, curr->value, curr->next);
+		printf("added key: %s val: %s next %p\n", curr->key, curr->value,
+			curr->next);
 		curr = curr->next;
 	}
 }
@@ -67,6 +71,7 @@ void	set_env_list(t_shell_ctx *sh_ctx, char **env)
 	char	**env_entry;
 
 	i = 0;
+	sh_ctx->status = 0;
 	env_entry = NULL;
 	sh_ctx->env = NULL;
 	while (env[i])
