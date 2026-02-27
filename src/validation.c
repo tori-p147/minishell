@@ -20,7 +20,7 @@ size_t	is_var_char(char c)
 	return (0);
 }
 
-int	is_export_valid(t_cmd *cmd)
+int	is_export_valid(t_cmds *cmd)
 {
 	size_t	i;
 	size_t	j;

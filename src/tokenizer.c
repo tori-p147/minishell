@@ -79,6 +79,5 @@ char	**tokenize(t_tokenizer_ctx *ctx)
 		add_token(ctx);
 		ctx->token = NULL;
 	}
-	// print_tokens(ctx->tokens);
 	return (ctx->tokens);
 }

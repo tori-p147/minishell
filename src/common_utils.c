@@ -29,6 +29,22 @@ int	ft_strcmp(const char *s1, const char *s2)
 	return (0);
 }
 
+void	print_cmds(t_cmds *cmd)
+{
+	t_cmds	*curr;
+
+	curr = cmd;
+	while (curr)
+	{
+		printf("cmd.argc %ld cmd.builtin %d\n", curr->argc, curr->builtin);
+		if (curr->redirs)
+			print_redirs(curr->redirs);
+		if (curr->argv)
+			print_argv(curr->argv);
+		curr = curr->next;
+	}
+}
+
 void	print_redirs(t_redir *redirs)
 {
 	t_redir	*curr;

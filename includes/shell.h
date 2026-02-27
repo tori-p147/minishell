@@ -81,14 +81,14 @@ typedef struct s_redir
 	struct s_redir	*next;
 }					t_redir;
 
-typedef struct s_cmd
+typedef struct s_cmds
 {
 	char			**argv;
 	size_t			argc;
 	t_redir			*redirs;
 	t_builtin		builtin;
-	// struct s_cmd *next; releaze pipeline
-}					t_cmd;
+	struct s_cmds	*next;
+}					t_cmds;
 
 typedef struct tokenizer_ctx
 {
@@ -111,7 +111,7 @@ void				sigint_handler(int sig);
 validation.c
 */
 size_t				is_var_char(char c);
-int					is_export_valid(t_cmd *cmd);
+int					is_export_valid(t_cmds *cmd);
 
 /*
 tokenizer.c
@@ -129,11 +129,13 @@ char				**parse(t_tokenizer_ctx *ctx);
 /*
 cmd_parser.c
 */
-t_cmd				*parse_cmd(t_tokenizer_ctx *ctx, t_cmd *cmd);
+t_cmds				*parse_cmd(t_tokenizer_ctx *ctx);
 
 /*
 cmd_parser_utils.c
 */
+t_builtin			get_cmd_type(char *argv0);
+void				set_cmd_type(t_cmds *cmd);
 int					is_redir_token(char *token);
 int					check_next_token(char *token);
 t_redir_type		get_redir_type(char *token);
@@ -155,25 +157,33 @@ void				env_unset(t_shell_ctx *sh_ctx, char *key);
 /*
 executor.c
 */
-int					apply_redirection(t_cmd *cmd);
-int					external(t_cmd *cmd, t_tokenizer_ctx *ctx);
-int					builtin_echo(t_cmd *cmd);
-int					builtin_exit(t_cmd *cmd, t_tokenizer_ctx *ctx);
+char	**convert_envp(t_env *env);
+int					apply_redirection(t_cmds *cmd);
+int					external(t_cmds *cmd, t_tokenizer_ctx *ctx);
+int					builtin(t_cmds *cmd, t_tokenizer_ctx *ctx, bool need_redir);
+int					builtin_echo(t_cmds *cmd);
+int					builtin_exit(t_cmds *cmd, t_tokenizer_ctx *ctx);
 int					builtin_pwd(t_tokenizer_ctx *ctx);
-int					builtin_unset(t_cmd *cmd, t_tokenizer_ctx *ctx);
+int					builtin_unset(t_cmds *cmd, t_tokenizer_ctx *ctx);
 int					builtin_pwd(t_tokenizer_ctx *ctx);
-int					builtin_export(t_cmd *cmd, t_tokenizer_ctx *ctx);
-int					execute(t_cmd *cmd, t_tokenizer_ctx *ctx);
+int					builtin_export(t_cmds *cmd, t_tokenizer_ctx *ctx);
+int					execute(t_cmds *cmd, t_tokenizer_ctx *ctx);
+int					run_simple_cmd(t_cmds *cmd, t_tokenizer_ctx *ctx);
 char				*search_exists_path(char *arg0, t_tokenizer_ctx *ctx,
 						char **path_dirs);
 char				*resolve_path(char *arg0, t_tokenizer_ctx *ctx);
+
+/*
+pipeline.c
+*/
+int					apply_pipeline(t_cmds *cmd, t_tokenizer_ctx *ctx);
 
 /*
 free_utils.c
 */
 void				free_array_n(char **array, size_t i);
 void				free_input(t_tokenizer_ctx *ctx);
-void				free_cmd(t_cmd *cmd);
+void				free_cmd(t_cmds *cmd);
 void				free_sh_ctx(t_shell_ctx *sh_ctx, int status);
 void				free_array(char **array);
 void				free_ctx(t_tokenizer_ctx *ctx, int status);
@@ -181,6 +191,7 @@ void				free_ctx(t_tokenizer_ctx *ctx, int status);
 /*
 common_utils.c
 */
+void				print_cmds(t_cmds *cmd);
 char				*ft_double_strjoin(char *s1, char *s2, char *s3);
 void				print_redirs(t_redir *redirs);
 int					ft_strcmp(const char *s1, const char *s2);

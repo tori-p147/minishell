@@ -27,7 +27,7 @@ void	init_ctx(t_tokenizer_ctx *ctx, t_shell_ctx *sh_ctx)
 void	read_input(t_tokenizer_ctx *ctx)
 {
 	const char	*prompt = "Zzz> ";
-	t_cmd		*cmd;
+	t_cmds		*cmds;
 
 	ctx->line = readline(prompt);
 	while ((ctx->line != NULL))
@@ -36,16 +36,16 @@ void	read_input(t_tokenizer_ctx *ctx)
 		{
 			add_history(ctx->line);
 			ctx->tokens = tokenize(ctx);
-			cmd = parse_cmd(ctx, cmd);
-			printf("cmd OK\n");
-			if (!cmd)
+			cmds = parse_cmd(ctx);
+			set_cmd_type(cmds);
+			if (!cmds)
 			{
 				free_input(ctx);
 				ctx->line = readline(prompt);
 				continue ;
 			}
-			ctx->shell->status = execute(cmd, ctx);
-			free_cmd(cmd);
+			ctx->shell->status = execute(cmds, ctx);
+			free_cmd(cmds);
 			free_input(ctx);
 		}
 		ctx->line = readline(prompt);
