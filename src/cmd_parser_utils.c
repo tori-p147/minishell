@@ -13,6 +13,34 @@
 #include "libft.h"
 #include "shell.h"
 
+t_builtin	get_cmd_type(char *argv0)
+{
+	if (!ft_strcmp(argv0, "export"))
+		return (BI_EXPORT);
+	else if (!ft_strcmp(argv0, "unset"))
+		return (BI_UNSET);
+	else if (!ft_strcmp(argv0, "pwd"))
+		return (BI_PWD);
+	else if (!ft_strcmp(argv0, "exit"))
+		return (BI_EXIT);
+	else if (!ft_strcmp(argv0, "echo"))
+		return (BI_ECHO);
+	return (BI_NONE);
+}
+
+void	set_cmd_type(t_cmds *cmds)
+{
+	t_cmds	*curr;
+
+	curr = cmds;
+	while (curr)
+	{
+		if (curr->argv)
+			curr->builtin = get_cmd_type(curr->argv[0]);
+		curr = curr->next;
+	}
+}
+
 int	is_redir_token(char *token)
 {
 	if (!ft_strcmp(token, "<") || !ft_strcmp(token, ">") || !ft_strcmp(token,

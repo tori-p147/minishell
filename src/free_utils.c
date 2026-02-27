@@ -22,28 +22,35 @@ void	free_input(t_tokenizer_ctx *ctx)
 	ctx->line = NULL;
 }
 
-void	free_cmd(t_cmd *cmd)
+void	free_cmd(t_cmds *cmd)
 {
 	size_t	i;
-	t_redir	*tmp;
+	t_redir	*tmp_r;
+	t_cmds	*tmp_cmd;
 
-	i = 0;
+	tmp_cmd = cmd;
 	if (!cmd)
 		return ;
-	if (cmd->argv)
+	while (cmd)
 	{
-		while (cmd->argv[i])
-			free(cmd->argv[i++]);
-		free(cmd->argv);
+		tmp_cmd = cmd->next;
+		if (cmd->argv)
+		{
+			i = 0;
+			while (cmd->argv[i])
+				free(cmd->argv[i++]);
+			free(cmd->argv);
+		}
+		while (cmd->redirs)
+		{
+			tmp_r = cmd->redirs->next;
+			free(cmd->redirs->file);
+			free(cmd->redirs);
+			cmd->redirs = tmp_r;
+		}
+		free(cmd);
+		cmd = tmp_cmd;
 	}
-	while (cmd->redirs)
-	{
-		tmp = cmd->redirs->next;
-		free(cmd->redirs->file);
-		free(cmd->redirs);
-		cmd->redirs = tmp;
-	}
-	free(cmd);
 }
 
 void	free_array_n(char **array, size_t i)

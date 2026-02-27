@@ -13,7 +13,7 @@
 #include "libft.h"
 #include "shell.h"
 
-int	apply_redirection(t_cmd *cmd)
+int	apply_redirection(t_cmds *cmd)
 {
 	int		fd;
 	t_redir	*curr;
@@ -47,7 +47,7 @@ Builtin commands are executed without fork() because they
 must modify the shell state
 Redirect change shell`s fd, before that need save fd for restore
 */
-int	builtin(t_cmd *cmd, t_tokenizer_ctx *ctx)
+int	builtin(t_cmds *cmd, t_tokenizer_ctx *ctx, bool need_redir)
 {
 	int	fd_in;
 	int	fd_out;
@@ -56,7 +56,7 @@ int	builtin(t_cmd *cmd, t_tokenizer_ctx *ctx)
 	fd_in = dup(STDIN_FILENO);
 	fd_out = dup(STDOUT_FILENO);
 	state = 0;
-	if (apply_redirection(cmd))
+	if (need_redir && apply_redirection(cmd))
 		return (state = FAIL);
 	if (cmd->builtin == BI_EXPORT)
 		state = builtin_export(cmd, ctx);
@@ -74,15 +74,23 @@ int	builtin(t_cmd *cmd, t_tokenizer_ctx *ctx)
 	close(fd_out);
 	return (state);
 }
+
+int	execute(t_cmds *cmd, t_tokenizer_ctx *ctx)
+{
+	if (!cmd->next)
+		return (run_simple_cmd(cmd, ctx));
+	else
+		return (apply_pipeline(cmd, ctx));
+}
+
 /*
-external -> exec by bin/cmd (in child/ with fork)
-builtin -> exec by shell (in parent/ no fork)
+external child -> exec by bin/cmd (in child/ with fork)
+builtin parent -> exec by shell (in parent/ no fork)
 */
-int	execute(t_cmd *cmd, t_tokenizer_ctx *ctx)
+int	run_simple_cmd(t_cmds *cmd, t_tokenizer_ctx *ctx)
 {
 	if (cmd->builtin == BI_NONE)
 		return (external(cmd, ctx));
 	else
-		return (builtin(cmd, ctx));
-	return (SUCCESS);
+		return (builtin(cmd, ctx, 1));
 }

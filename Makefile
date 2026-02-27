@@ -31,7 +31,8 @@ SRC_FILES = main.c \
 			validation.c \
 			error.c \
 			env_utils.c \
-			common_utils.c
+			common_utils.c \
+			pipeline_service.c 
 		
 SOURCES = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 
