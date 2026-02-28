@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 16:09:21 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/02/04 19:11:07 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/02/28 15:22:51 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ char	*get_value_by_key(t_env *env, char *key)
 	found_env = find_env(env, key);
 	if (!found_env)
 		return ("");
-	//printf("found env VALUE = %s\n", found_env->value);
 	return (found_env->value);
 }
 
@@ -34,7 +33,6 @@ size_t	expand_variable(t_tokenizer_ctx *ctx, size_t i)
 	start = ++i;
 	if (ctx->line[start] == '?')
 	{
-		printf("EXPAND STATUS %d\n", ctx->shell->status);
 		value = ft_itoa(ctx->shell->status);
 		i = start + 1;
 	}
@@ -45,7 +43,6 @@ size_t	expand_variable(t_tokenizer_ctx *ctx, size_t i)
 		while (is_var_char(ctx->line[i]))
 			i++;
 		var_name = ft_substr(ctx->line, start, i - start);
-		printf("expand var name = %s\n", var_name);
 		value = get_value_by_key(ctx->shell->env, var_name);
 		free(var_name);
 	}
@@ -56,10 +53,8 @@ size_t	expand_variable(t_tokenizer_ctx *ctx, size_t i)
 		tmp = ft_strjoin(ctx->token, value);
 		free(ctx->token);
 		ctx->token = tmp;
-		printf("ctx->token = %s\n", ctx->token);
 	}
 	if (ctx->line[start] == '?')
 		free(value);
-	printf("i - 1 = %ld\n", i - 1);
 	return (i - 1);
 }

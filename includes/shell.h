@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 20:18:34 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/02/19 19:56:09 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/02/28 15:18:16 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,20 +58,20 @@ typedef enum e_builtin
 {
 	BI_NONE,
 	BI_ECHO,
-	// BI_CD,
+	BI_CD,
 	BI_PWD,
 	BI_EXPORT,
 	BI_UNSET,
-	// BI_ENV,
+	BI_ENV,
 	BI_EXIT
 }					t_builtin;
 
 typedef enum e_redir_type
 {
-	R_IN = 0,     // <
-	R_OUT = 1,    // >
-	R_APPEND = 2, // >>
-	R_HEREDOC = 3 // <<
+	R_IN = 0,
+	R_OUT = 1,
+	R_APPEND = 2,
+	R_HEREDOC = 3
 }					t_redir_type;
 
 typedef struct s_redir
@@ -148,8 +148,8 @@ env_utils.c
 */
 size_t				count_envs_size(t_env *env);
 t_env				*find_env(t_env *env, char *key);
-void				env_set(t_shell_ctx *ctx, char *env);
-void				add_env(t_shell_ctx *sh_ctx, char **entry);
+void				set_env(t_shell_ctx *ctx, char **env);
+void				add_or_update_env(t_shell_ctx *ctx, char *env);
 void				env_unset(t_shell_ctx *sh_ctx, char *key);
 
 /*
@@ -157,6 +157,8 @@ executor.c
 */
 int					apply_redirection(t_cmd *cmd);
 int					external(t_cmd *cmd, t_tokenizer_ctx *ctx);
+int					builtin_env(t_tokenizer_ctx *ctx);
+int					builtin_cd(t_cmd *cmd, t_tokenizer_ctx *ctx);
 int					builtin_echo(t_cmd *cmd);
 int					builtin_exit(t_cmd *cmd, t_tokenizer_ctx *ctx);
 int					builtin_pwd(t_tokenizer_ctx *ctx);

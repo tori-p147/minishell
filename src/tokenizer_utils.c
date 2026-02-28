@@ -3,33 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:38:11 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/30 20:12:57 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/02/28 15:25:29 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "shell.h"
 
-size_t is_operator(t_tokenizer_ctx *ctx, size_t i)
+size_t	is_operator(t_tokenizer_ctx *ctx, size_t i)
 {
 	if (ctx->c == '<' || ctx->c == '>')
 		return (1);
-	else if (!ft_strncmp(&ctx->line[i], "<<", 2) || !ft_strncmp(&ctx->line[i], ">>", 2))
+	else if (!ft_strcmp(&ctx->line[i], "<<") || !ft_strcmp(&ctx->line[i],
+			">>"))
 		return (1);
 	return (0);
 }
 
-size_t split_operator(t_tokenizer_ctx *ctx, size_t i)
+size_t	split_operator(t_tokenizer_ctx *ctx, size_t i)
 {
-	if (!ft_strncmp(&ctx->line[i], "<<", 2))
+	if (!ft_strcmp(&ctx->line[i], "<<"))
 	{
 		ctx->token = ft_strdup("<<");
 		i = i + 1;
 	}
-	else if (!ft_strncmp(&ctx->line[i], ">>", 2))
+	else if (!ft_strcmp(&ctx->line[i], ">>"))
 	{
 		ctx->token = ft_strdup(">>");
 		i = i + 1;

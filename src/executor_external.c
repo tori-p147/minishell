@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_external.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 17:09:47 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/02/04 19:03:15 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/02/28 15:21:10 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ int	parent_proc(pid_t pid)
 	int	st;
 	int	exit_st;
 
+	exit_st = 0;
 	waitpid(pid, &st, 0);
 	if (WIFEXITED(st))
 		exit_st = WEXITSTATUS(st);

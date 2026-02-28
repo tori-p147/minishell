@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/20 19:48:35 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/02/19 20:01:35 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/02/28 13:46:44 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,15 +69,16 @@ int	builtin(t_cmd *cmd, t_tokenizer_ctx *ctx)
 	else if (cmd->builtin == BI_ECHO)
 		state = (builtin_echo(cmd));
 	else if (cmd->builtin == BI_CD)
-		return (builtin_cd(cmd, ctx));
+		state = (builtin_cd(cmd, ctx));
 	else if (cmd->builtin == BI_ENV)
-		return (builtin_env(ctx));
+		state = (builtin_env(ctx));
 	dup2(fd_in, STDIN_FILENO);
 	dup2(fd_out, STDOUT_FILENO);
 	close(fd_in);
 	close(fd_out);
 	return (state);
 }
+
 /*
 external -> exec by bin/cmd (in child/ with fork)
 builtin -> exec by shell (in parent/ no fork)

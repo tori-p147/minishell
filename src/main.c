@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 20:18:19 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/02/19 20:02:39 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/02/28 15:21:41 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ void	read_input(t_tokenizer_ctx *ctx)
 			add_history(ctx->line);
 			ctx->tokens = tokenize(ctx);
 			cmd = parse_cmd(ctx, cmd);
-			printf("cmd OK\n");
 			if (!cmd)
 			{
 				free_input(ctx);
@@ -76,9 +75,7 @@ void	set_env_list(t_shell_ctx *sh_ctx, char **env)
 	sh_ctx->env = NULL;
 	while (env[i])
 	{
-		// printf("env: %s\n", env[i]);
 		env_entry = ft_split(env[i], '=');
-		// printf("entry k: %s val: %s\n", env_entry[0], env_entry[1]);
 		set_env(sh_ctx, env_entry);
 		free_array(env_entry);
 		i++;

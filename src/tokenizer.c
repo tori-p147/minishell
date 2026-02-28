@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/20 19:48:37 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/02/03 18:39:49 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/02/28 15:21:56 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,5 @@ char	**tokenize(t_tokenizer_ctx *ctx)
 		add_token(ctx);
 		ctx->token = NULL;
 	}
-	// print_tokens(ctx->tokens);
 	return (ctx->tokens);
 }

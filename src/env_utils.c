@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 13:28:19 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/01/22 17:07:12 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/02/28 15:21:21 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,9 @@
 
 size_t	count_envs_size(t_env *env)
 {
-	size_t	counter = 0;
+	size_t	counter;
 
+	counter = 0;
 	while (env->next)
 	{
 		counter++;
@@ -37,6 +38,55 @@ t_env	*find_env(t_env *env, char *key)
 		curr = curr->next;
 	}
 	return (NULL);
+}
+
+void	set_env(t_shell_ctx *sh_ctx, char **entry)
+{
+	t_env	*last;
+	t_env	*new;
+
+	new = malloc(sizeof(t_env));
+	if (!new)
+		free_sh_ctx(sh_ctx, EXIT_FAILURE);
+	new->key = ft_strdup(entry[0]);
+	new->value = NULL;
+	if (entry[1])
+		new->value = ft_strdup(entry[1]);
+	new->next = NULL;
+	if (!sh_ctx->env)
+	{
+		sh_ctx->env = new;
+		return ;
+	}
+	last = sh_ctx->env;
+	while (last->next)
+		last = last->next;
+	last->next = new;
+}
+
+void	add_or_update_env(t_shell_ctx *ctx, char *env)
+{
+	t_env	*found_env;
+	char	**env_entry;
+
+	env_entry = ft_split(env, '=');
+	found_env = find_env(ctx->env, env_entry[0]);
+	if (!found_env)
+	{
+		set_env(ctx, env_entry);
+		print_envs(ctx);
+		printf("new added\n");
+	}
+	else
+	{
+		free(found_env->value);
+		found_env->value = NULL;
+		if (env_entry[1])
+			found_env->value = ft_strdup(env_entry[1]);
+		print_envs(ctx);
+		printf("updated\n");
+	}
+	free_array(env_entry);
 }
 
 void	env_unset(t_shell_ctx *sh_ctx, char *key)
@@ -63,53 +113,4 @@ void	env_unset(t_shell_ctx *sh_ctx, char *key)
 		}
 		prev = prev->next;
 	}
-}
-
-void	add_env(t_shell_ctx *sh_ctx, char **entry)
-{
-	t_env	*last;
-	t_env	*new;
-
-	new = malloc(sizeof(t_env));
-	if (!new)
-		free_sh_ctx(sh_ctx, EXIT_FAILURE);
-	new->key = ft_strdup(entry[0]);
-	new->value = NULL;
-	if (entry[1])
-		new->value = ft_strdup(entry[1]);
-	new->next = NULL;
-	if (!sh_ctx->env)
-	{
-		sh_ctx->env = new;
-		return ;
-	}
-	last = sh_ctx->env;
-	while (last->next)
-		last = last->next;
-	last->next = new;
-}
-
-void	env_set(t_shell_ctx *ctx, char *env)
-{
-	t_env	*found_env;
-	char	**env_entry;
-
-	env_entry = ft_split(env, '=');
-	found_env = find_env(ctx->env, env_entry[0]);
-	if (!found_env)
-	{
-		add_env(ctx, env_entry);
-		print_envs(ctx);
-		printf("new added\n");
-	}
-	else
-	{
-		free(found_env->value);
-		found_env->value = NULL;
-		if (env_entry[1])
-			found_env->value = ft_strdup(env_entry[1]);
-		print_envs(ctx);
-		printf("updated\n");
-	}
-	free_array(env_entry);
 }

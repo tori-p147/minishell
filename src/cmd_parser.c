@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_parser.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vmatsuda <vmatsuda@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 22:59:21 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/02/04 19:10:31 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/02/28 15:15:19 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,10 @@ t_builtin	get_builtin_type(char *argv0)
 		return (BI_EXIT);
 	else if (!ft_strcmp(argv0, "echo"))
 		return (BI_ECHO);
+	else if (!ft_strcmp(argv0, "cd"))
+		return (BI_CD);
+	else if (!ft_strcmp(argv0, "env"))
+		return (BI_ENV);
 	return (BI_NONE);
 }
 
