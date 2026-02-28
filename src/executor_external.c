@@ -42,7 +42,7 @@ char	**convert_envp(t_env *env)
 	return (envp);
 }
 
-void	child_proc(t_cmd *cmd, t_tokenizer_ctx *ctx, char *path)
+void	child_proc(t_cmds *cmd, t_tokenizer_ctx *ctx, char *path)
 {
 	char	**envp;
 
@@ -50,7 +50,10 @@ void	child_proc(t_cmd *cmd, t_tokenizer_ctx *ctx, char *path)
 	if (!envp)
 		exit(1);
 	if (apply_redirection(cmd))
+	{
+		free_array(envp);
 		exit(1);
+	}
 	execve(path, cmd->argv, envp);
 	printf("minishell: %s: %s\n", cmd->argv[0], strerror(errno));
 	free_array(envp);
@@ -81,7 +84,7 @@ how	fork(void) working:
 2. !pid == 0 -> child process
 3. pid > 0 -> parent process
 */
-int	do_fork(t_cmd *cmd, t_tokenizer_ctx *ctx, char *path)
+int	do_fork(t_cmds *cmd, t_tokenizer_ctx *ctx, char *path)
 {
 	pid_t	pid;
 
@@ -100,7 +103,7 @@ int	do_fork(t_cmd *cmd, t_tokenizer_ctx *ctx, char *path)
 	return (FAIL);
 }
 
-int	external(t_cmd *cmd, t_tokenizer_ctx *ctx)
+int	external(t_cmds *cmd, t_tokenizer_ctx *ctx)
 {
 	char	*path;
 	int		exit_code;
@@ -117,7 +120,6 @@ int	external(t_cmd *cmd, t_tokenizer_ctx *ctx)
 		}
 		return (parent_proc(pid));
 	}
-	printf("argv %s\n", cmd->argv[0]);
 	path = resolve_path(cmd->argv[0], ctx);
 	if (!path)
 	{

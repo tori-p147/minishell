@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 20:18:19 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/02/28 15:21:41 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/02/28 16:15:07 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	init_ctx(t_tokenizer_ctx *ctx, t_shell_ctx *sh_ctx)
 void	read_input(t_tokenizer_ctx *ctx)
 {
 	const char	*prompt = "Zzz> ";
-	t_cmd		*cmd;
+	t_cmds		*cmds;
 
 	ctx->line = readline(prompt);
 	while ((ctx->line != NULL))
@@ -36,15 +36,16 @@ void	read_input(t_tokenizer_ctx *ctx)
 		{
 			add_history(ctx->line);
 			ctx->tokens = tokenize(ctx);
-			cmd = parse_cmd(ctx, cmd);
-			if (!cmd)
+			cmds = parse_cmd(ctx);
+			set_cmd_type(cmds);
+			if (!cmds)
 			{
 				free_input(ctx);
 				ctx->line = readline(prompt);
 				continue ;
 			}
-			ctx->shell->status = execute(cmd, ctx);
-			free_cmd(cmd);
+			ctx->shell->status = execute(cmds, ctx);
+			free_cmd(cmds);
 			free_input(ctx);
 		}
 		ctx->line = readline(prompt);

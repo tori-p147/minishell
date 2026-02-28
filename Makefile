@@ -32,6 +32,7 @@ SRC_FILES = main.c \
 			error.c \
 			env_utils.c \
 			common_utils.c \
+			pipeline_service.c \
 			executor_wd.c
 		
 SOURCES = $(addprefix $(SRC_DIR)/, $(SRC_FILES))

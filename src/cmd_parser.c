@@ -6,7 +6,7 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 22:59:21 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/02/28 15:15:19 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/02/28 15:37:02 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,19 +32,22 @@ t_builtin	get_builtin_type(char *argv0)
 	return (BI_NONE);
 }
 
-t_cmd	*alloc_cmd(t_tokenizer_ctx *ctx, t_cmd *cmd)
+t_cmds	*alloc_cmd(t_tokenizer_ctx *ctx)
 {
-	cmd = malloc(sizeof(t_cmd));
+	t_cmds	*cmd;
+
+	cmd = malloc(sizeof(t_cmds));
 	if (!cmd)
 		free_ctx(ctx, EXIT_FAILURE);
 	cmd->builtin = BI_NONE;
 	cmd->argv = NULL;
 	cmd->argc = 0;
 	cmd->redirs = NULL;
+	cmd->next = NULL;
 	return (cmd);
 }
 
-t_redir	*add_redir(char *token, char *next_token, t_cmd *cmd)
+t_redir	*add_redir(char *token, char *next_token, t_cmds *cmd)
 {
 	t_redir	*new_redir;
 	t_redir	*last;
@@ -67,7 +70,7 @@ t_redir	*add_redir(char *token, char *next_token, t_cmd *cmd)
 	return (cmd->redirs);
 }
 
-void	add_argv(char *token, t_tokenizer_ctx *ctx, t_cmd *cmd)
+void	add_argv(char *token, t_tokenizer_ctx *ctx, t_cmds *cmd)
 {
 	char	*new_argv;
 	char	**tmp;
@@ -95,31 +98,49 @@ void	add_argv(char *token, t_tokenizer_ctx *ctx, t_cmd *cmd)
 	cmd->argc++;
 }
 
-t_cmd	*parse_cmd(t_tokenizer_ctx *ctx, t_cmd *cmd)
+int	validate_redir_pos(t_tokenizer_ctx *ctx, t_cmds *head, t_cmds *curr,
+		size_t i)
+{
+	if (!ctx->tokens[i + 1] || !check_next_token(ctx->tokens[i + 1]))
+	{
+		free_cmd(head);
+		ctx->shell->status = SYNTAX_ERROR;
+		return (0);
+	}
+	curr->redirs = add_redir(ctx->tokens[i], ctx->tokens[i + 1], curr);
+	if (!curr->redirs)
+	{
+		free_cmd(head);
+		free_ctx(ctx, EXIT_FAILURE);
+	}
+	return (1);
+}
+
+t_cmds	*parse_cmd(t_tokenizer_ctx *ctx)
 {
 	size_t	i;
+	t_cmds	*head;
+	t_cmds	*curr;
 
-	cmd = alloc_cmd(ctx, cmd);
+	head = alloc_cmd(ctx);
 	i = 0;
+	curr = head;
 	while (ctx->tokens[i])
 	{
 		if (is_redir_token(ctx->tokens[i]))
 		{
-			if (!ctx->tokens[i + 1] || !check_next_token(ctx->tokens[i + 1]))
-			{
-				free_cmd(cmd);
-				ctx->shell->status = 2;
+			if (!validate_redir_pos(ctx, head, curr, i))
 				return (NULL);
-			}
-			cmd->redirs = add_redir(ctx->tokens[i], ctx->tokens[i + 1], cmd);
-			if (!cmd->redirs)
-				free_ctx(ctx, EXIT_FAILURE);
 			i += 2;
 		}
+		else if (!ft_strcmp(ctx->tokens[i], "|"))
+		{
+			curr->next = alloc_cmd(ctx);
+			curr = curr->next;
+			i++;
+		}
 		else
-			add_argv(ctx->tokens[i++], ctx, cmd);
+			add_argv(ctx->tokens[i++], ctx, curr);
 	}
-	if (cmd->argv)
-		cmd->builtin = get_builtin_type(cmd->argv[0]);
-	return (cmd);
+	return (head);
 }

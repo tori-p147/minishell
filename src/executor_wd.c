@@ -6,14 +6,14 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/28 15:19:26 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/02/28 15:20:21 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/02/28 15:41:17 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "shell.h"
 
-int	try_chdir(t_cmd *cmd, char *target)
+int	try_chdir(t_cmds *cmd, char *target)
 {
 	if (chdir(target) != 0)
 	{
@@ -24,7 +24,7 @@ int	try_chdir(t_cmd *cmd, char *target)
 	return (SUCCESS);
 }
 
-int	builtin_cd(t_cmd *cmd, t_tokenizer_ctx *ctx)
+int	builtin_cd(t_cmds *cmd, t_tokenizer_ctx *ctx)
 {
 	char	*old_wd;
 	char	*target;

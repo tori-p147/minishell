@@ -6,14 +6,14 @@
 /*   By: vmatsuda <vmatsuda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 22:32:00 by vmatsuda          #+#    #+#             */
-/*   Updated: 2026/02/28 15:20:15 by vmatsuda         ###   ########.fr       */
+/*   Updated: 2026/02/28 15:38:01 by vmatsuda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "shell.h"
 
-int	builtin_export(t_cmd *cmd, t_tokenizer_ctx *ctx)
+int	builtin_export(t_cmds *cmd, t_tokenizer_ctx *ctx)
 {
 	size_t	i;
 
@@ -25,7 +25,7 @@ int	builtin_export(t_cmd *cmd, t_tokenizer_ctx *ctx)
 	return (SUCCESS);
 }
 
-int	builtin_unset(t_cmd *cmd, t_tokenizer_ctx *ctx)
+int	builtin_unset(t_cmds *cmd, t_tokenizer_ctx *ctx)
 {
 	size_t	i;
 
@@ -35,7 +35,7 @@ int	builtin_unset(t_cmd *cmd, t_tokenizer_ctx *ctx)
 	return (SUCCESS);
 }
 
-int	builtin_exit(t_cmd *cmd, t_tokenizer_ctx *ctx)
+int	builtin_exit(t_cmds *cmd, t_tokenizer_ctx *ctx)
 {
 	size_t	i;
 
@@ -63,7 +63,7 @@ int	builtin_exit(t_cmd *cmd, t_tokenizer_ctx *ctx)
 	return (ft_atoi(cmd->argv[1]));
 }
 
-int	builtin_echo(t_cmd *cmd)
+int	builtin_echo(t_cmds *cmd)
 {
 	size_t	i;
 	bool	is_n;
