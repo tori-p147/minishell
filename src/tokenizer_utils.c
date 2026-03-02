@@ -13,32 +13,42 @@
 #include "libft.h"
 #include "shell.h"
 
+//strcmp -> strncmpに変更
 size_t	is_operator(t_tokenizer_ctx *ctx, size_t i)
 {
-	if (ctx->c == '<' || ctx->c == '>')
+	if (ctx->c == '<' || ctx->c == '>' || ctx->'|')
 		return (1);
-	else if (!ft_strcmp(&ctx->line[i], "<<") || !ft_strcmp(&ctx->line[i],
-			">>"))
+	else if (!ft_strncmp(&ctx->line[i], "<<", 2) || !ft_strncmp(&ctx->line[i],
+			">>", 2) || !ft_strncmp(&ctx->line[i], "||", 2))
 		return (1);
 	return (0);
 }
 
+//strcmp -> strncmpに変更
+//"|"の追加
 size_t	split_operator(t_tokenizer_ctx *ctx, size_t i)
 {
-	if (!ft_strcmp(&ctx->line[i], "<<"))
+	if (!ft_strncmp(&ctx->line[i], "<<", 2))
 	{
 		ctx->token = ft_strdup("<<");
-		i = i + 1;
+		i++;
 	}
-	else if (!ft_strcmp(&ctx->line[i], ">>"))
+	else if (!ft_strncmp(&ctx->line[i], ">>", 2))
 	{
 		ctx->token = ft_strdup(">>");
-		i = i + 1;
+		i++;
+	}
+	else if (!ft_strncmp(&ctx->line[i], "||", 2))
+	{
+		ctx->token = ft_strdup("||");
+		i++;
 	}
 	else if (ctx->c == '>')
 		ctx->token = ft_strdup(">");
 	else if (ctx->c == '<')
 		ctx->token = ft_strdup("<");
+	else if (ctx->c == '|')
+		ctx->token = ft_strdup("|");
 	add_token(ctx);
 	ctx->token = NULL;
 	return (i);

@@ -112,6 +112,7 @@ validation.c
 */
 size_t				is_var_char(char c);
 int					is_export_valid(t_cmds *cmd);
+int					validate_tokens(char **tokens);
 
 /*
 tokenizer.c

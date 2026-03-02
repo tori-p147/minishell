@@ -28,7 +28,10 @@ static size_t	normal_process(t_tokenizer_ctx *ctx, size_t i)
 		i = split_operator(ctx, i);
 	}
 	else if ((ctx->c == ' ' || ctx->c == '\t'))
-		add_token(ctx);
+	{
+		if (ctx->token)
+			add_token(ctx);
+	}
 	else
 		ctx->token = strjoin_char(ctx);
 	return (i);
@@ -57,6 +60,9 @@ char	**tokenize(t_tokenizer_ctx *ctx)
 {
 	size_t	i;
 
+	ctx->state = NORMAL;
+	ctx->tokens = NULL;
+	ctx->token = NULL;
 	i = -1;
 	ctx->line_len = ft_strlen(ctx->line);
 	while (++i < ctx->line_len)
@@ -71,8 +77,13 @@ char	**tokenize(t_tokenizer_ctx *ctx)
 	}
 	if (ctx->state != NORMAL)
 	{
-		printf("minishell: syntax error: unexpected end of file\n");
+		ft_putendl_fd("minishell: syntax error: unexpected end of file", 2);
 		ctx->shell->status = SYNTAX_ERROR;
+		free_array(ctx->tokens);
+		free(ctx->token);
+		ctx->tokens = NULL;
+		ctx->token = NULL;
+		return (NULL);
 	}
 	if (ctx->token)
 	{

@@ -24,6 +24,7 @@ void	init_ctx(t_tokenizer_ctx *ctx, t_shell_ctx *sh_ctx)
 	ctx->c = 0;
 }
 
+//tokenize後にsyntax error出力してた場合の処理の追加
 void	read_input(t_tokenizer_ctx *ctx)
 {
 	const char	*prompt = "Zzz> ";
@@ -32,22 +33,39 @@ void	read_input(t_tokenizer_ctx *ctx)
 	ctx->line = readline(prompt);
 	while ((ctx->line != NULL))
 	{
-		if (ft_strlen(ctx->line) > 0)
+		if (ft_strlen(ctx->line) == 0)
 		{
-			add_history(ctx->line);
-			ctx->tokens = tokenize(ctx);
-			cmds = parse_cmd(ctx);
-			set_cmd_type(cmds);
-			if (!cmds)
-			{
-				free_input(ctx);
-				ctx->line = readline(prompt);
-				continue ;
-			}
-			ctx->shell->status = execute(cmds, ctx);
-			free_cmd(cmds);
-			free_input(ctx);
+			free(ctx->line);
+			ctx->line = NULL;
+			ctx->line = readline(prompt);
+			continue ;
 		}
+		add_history(ctx->line);
+		ctx->tokens = tokenize(ctx);
+		if (!ctx->tokens)
+		{
+			free_input(ctx);
+			ctx->line = readline(prompt);
+			continue ;
+		}
+		if (validate_tokens(ctx->tokens) == 0)
+		{
+			ctx->shell->status = SYNTAX_ERROR;
+			free_input(ctx);
+			ctx->line = readline(prompt);
+			continue ;
+		}
+		cmds = parse_cmd(ctx);
+		if (!cmds)
+		{
+			free_input(ctx);
+			ctx->line = readline(prompt);
+			continue ;
+		}
+		set_cmd_type(cmds);
+		ctx->shell->status = execute(cmds, ctx);
+		free_cmd(cmds);
+		free_input(ctx);
 		ctx->line = readline(prompt);
 	}
 }
