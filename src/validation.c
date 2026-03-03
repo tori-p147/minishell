@@ -47,3 +47,60 @@ int	is_export_valid(t_cmds *cmd)
 	}
 	return (1);
 }
+
+//validate_tokes.c追加
+static int	is_pipe_token(char *t)
+{
+	return (t && !ft_strcmp(t, "|"));
+}
+
+static int	is_or_token(char *t)
+{
+	return (t && !ft_strcmp(t, "||"));
+}
+
+static int	syntax_error_token(char *token)
+{
+	char	*msg;
+
+	msg = "syntax error near unexpected token";
+	if (!token)
+		printf("minishell: %s 'newline'\n", msg);
+	else
+		printf("minishell: %s '%s'\n", msg, token);
+	return (0);
+}
+
+int	validate_tokens(char **t)
+{
+	size_t	i;
+
+	if (!t || !t[0])
+		return (1);
+	if (is_pipe_token(t[0]))
+		return (syntax_error_token("|"));
+	i = 0;
+	while (t[i])
+	{
+		if (is_or_token(t[i]))
+			return (syntax_error_token("||"));
+		if (is_redir_token(t[i]))
+		{
+			if (!t[i + 1])
+				return (syntax_error_token(NULL));
+			if (is_redir_token(t[i + 1]) || is_pipe_token(t[i + 1]) || is_or_token(t[i + 1]))
+				return (syntax_error_token(t[i + 1]));
+		}
+		if (is_pipe_token(t[i]))
+		{
+			if (!t[i + 1])
+				return (syntax_error_token(NULL));
+			if (is_pipe_token(t[i + 1]) || is_redir_token(t[i + 1]) || is_or_token(t[i + 1]))
+				return (syntax_error_token(t[i + 1]));
+			if (i > 0 && is_redir_token(t[i - 1]))
+				return (syntax_error_token("|"));
+		}
+		i++;
+	}
+	return (1);
+}
