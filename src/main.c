@@ -24,49 +24,47 @@ void	init_ctx(t_tokenizer_ctx *ctx, t_shell_ctx *sh_ctx)
 	ctx->c = 0;
 }
 
-//tokenize後にsyntax error出力してた場合の処理の追加
+static int	process_line(t_tokenizer_ctx *ctx)
+{
+	t_cmds	*cmds;
+
+	ctx->tokens = tokenize(ctx);
+	if (!ctx->tokens)
+		return (0);
+	if (!validate_tokens(ctx->tokens))
+	{
+		ctx->shell->status = SYNTAX_ERROR;
+		return (0);
+	}
+	cmds = parse_cmd(ctx);
+	if (!cmds)
+		return (0);
+	set_cmd_type(cmds);
+	ctx->shell->status = execute(cmds, ctx);
+	free_cmd(cmds);
+	return (1);
+}
+
+// tokenize後にsyntax error出力してた場合の処理の追加
 void	read_input(t_tokenizer_ctx *ctx)
 {
-	const char	*prompt = "Zzz> ";
-	t_cmds		*cmds;
+	const char	*prompt;
 
-	ctx->line = readline(prompt);
-	while ((ctx->line != NULL))
+	prompt = "Zzz> ";
+	while (1)
 	{
+		ctx->line = readline(prompt);
+		if (!ctx->line)
+			break ;
 		if (ft_strlen(ctx->line) == 0)
 		{
 			free(ctx->line);
-			ctx->line = NULL;
-			ctx->line = readline(prompt);
 			continue ;
 		}
 		add_history(ctx->line);
-		ctx->tokens = tokenize(ctx);
-		if (!ctx->tokens)
-		{
-			free_input(ctx);
-			ctx->line = readline(prompt);
-			continue ;
-		}
-		if (validate_tokens(ctx->tokens) == 0)
-		{
+		if (!process_line(ctx))
 			ctx->shell->status = SYNTAX_ERROR;
-			free_input(ctx);
-			ctx->line = readline(prompt);
-			continue ;
-		}
-		cmds = parse_cmd(ctx);
-		if (!cmds)
-		{
-			free_input(ctx);
-			ctx->line = readline(prompt);
-			continue ;
-		}
-		set_cmd_type(cmds);
-		ctx->shell->status = execute(cmds, ctx);
-		free_cmd(cmds);
 		free_input(ctx);
-		ctx->line = readline(prompt);
 	}
 }
 

@@ -13,10 +13,10 @@
 #include "libft.h"
 #include "shell.h"
 
-//strcmp -> strncmpに変更
+// strcmp -> strncmpに変更
 size_t	is_operator(t_tokenizer_ctx *ctx, size_t i)
 {
-	if (ctx->c == '<' || ctx->c == '>' || ctx->'|')
+	if (ctx->c == '<' || ctx->c == '>' || ctx->c == '|')
 		return (1);
 	else if (!ft_strncmp(&ctx->line[i], "<<", 2) || !ft_strncmp(&ctx->line[i],
 			">>", 2) || !ft_strncmp(&ctx->line[i], "||", 2))
@@ -24,7 +24,7 @@ size_t	is_operator(t_tokenizer_ctx *ctx, size_t i)
 	return (0);
 }
 
-//strcmp -> strncmpに変更
+// strcmp -> strncmpに変更
 //"|"の追加
 size_t	split_operator(t_tokenizer_ctx *ctx, size_t i)
 {

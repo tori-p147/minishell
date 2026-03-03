@@ -86,10 +86,8 @@ int	builtin_echo(t_cmds *cmd)
 
 int	builtin_env(t_tokenizer_ctx *ctx)
 {
-	size_t	i;
 	t_env	*curr;
 
-	i = -1;
 	curr = ctx->shell->env;
 	while (curr)
 	{
