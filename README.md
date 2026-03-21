@@ -18,7 +18,8 @@ Additionally, to implement the built-in commands independently: echo, cd, pwd, e
 No additional libraries or dependencies are needed.
 
 ## Project Structure
-```minishell/
+```
+minishell/
 ├── src/
 │   ├── tokenizer/
 │   ├── parser/
