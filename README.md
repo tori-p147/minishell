@@ -23,8 +23,10 @@ No additional libraries or dependencies are needed.
 
 The **tokenizer** processes the user input string and splits it into an array of tokens.
 It also performs environment variable expansion when needed.
+
 The **parser** transforms the array of tokens into a list of commands.
 Each command contains a list of redirections, which are later handled appropriately by the executor.
+
 The **executor** receives the structured commands and executes them, applying pipes and redirections as defined.
 
 ## Resources
