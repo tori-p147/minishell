@@ -17,6 +17,19 @@ Additionally, to implement the built-in commands independently: echo, cd, pwd, e
 
 No additional libraries or dependencies are needed.
 
+## Project Structure
+minishell/
+├── src/
+│   ├── tokenizer/
+│   ├── parser/
+│   ├── executor/
+│   └── utils/
+│   └── errors/
+├── includes/
+├── libs/
+├── Makefile
+└── README.md
+
 ## Architecture Overview
 
   The core logic of the program is organized into three main layers: **tokenizer**, **parser**, and **executor**.
